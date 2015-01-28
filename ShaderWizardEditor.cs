@@ -71,11 +71,8 @@ namespace ShaderWizard {
 
             _showCommentSettings = SwGuiLayout.BeginControlGroup(_showCommentSettings, "Comments");
             if (_showCommentSettings) {
-                _shaderSettings.CommentSurface =
-                    EditorGUILayout.ToggleLeft("Put comments in surface shader", _shaderSettings.CommentSurface);
-                _shaderSettings.CommentFinal =
-                    EditorGUILayout.ToggleLeft("Put comments in final shader",
-                        _shaderSettings.CommentFinal);
+                _shaderSettings.CommentShader =
+                    EditorGUILayout.ToggleLeft("Put comments in generated shader", _shaderSettings.CommentShader);
             }
             SwGuiLayout.EndControlGroup();
 

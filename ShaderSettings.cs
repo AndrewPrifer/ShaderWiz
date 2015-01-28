@@ -16,15 +16,14 @@ namespace ShaderWizard {
         public string Name { get; set; }
         public bool UseFallback { get; set; }
         public string Fallback { get; set; }
-        public bool CommentFinal { get; set; }
-        public bool CommentSurface { get; set; }
+
+        public bool CommentShader { get; set; }
 
         private void Init() {
             _properties = new List<ShaderProperty>();
             _subshaders = new List<Subshader>();
 
-            CommentSurface = true;
-            CommentFinal = false;
+            CommentShader = true;
             Fallback = "Diffuse";
             UseFallback = true;
             Name = "NewShader";

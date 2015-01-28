@@ -47,11 +47,53 @@ namespace ShaderWizard {
                 writer.WriteLine("}");
             }
 
-            foreach (var subshader in shader.GetSubshaders()) {
-                //     Subshader {
+            foreach (Subshader subshader in shader.GetSubshaders()) {
+                // Subshader {
                 writer.WriteLine("Subshader {");
                 writer.Indent++;
+                if (subshader.SubshaderType == SubshaderType.Surface) {
+                    var surface = (SurfaceShader) subshader;
+                    if (surface.RenderPosition != RenderPosition.Geometry || surface.ForceNoShadowCasting || surface.IgnoreProjector) {
+                        // Tags { 
+                        writer.Write("Tags { ");
+                        if (surface.RenderPosition != RenderPosition.Geometry) writer.Write("\"Queue\" = \"{0}\" ", surface.RenderPosition);
+                        if (surface.ForceNoShadowCasting) writer.Write("\"ForceNoShadowCasting\" = \"True\" ");
+                        if (surface.IgnoreProjector) writer.Write("\"IgnoreProjector\" = \"True\" ");
+                        // }
+                        writer.WriteLine("}");
+                    }
+                    writer.WriteLine("CGPROGRAM");
+                    writer.Write("#pragma ");
+                    writer.Write("surface {0} ", "surf");
+                    if (surface.UseBuiltinLighting) {
+                        writer.Write(surface.LightingModel + " ");
+                    } else {
+                        writer.Write("Lighting{0} ", "Custom");
+                    }
+                    if (surface.UseVertexModifier) writer.Write("vertex:{0} ", "vert");
+                    if (surface.UseFinalColorModifier) writer.Write("finalcolor:{0} ", "color");
+                    if (surface.UseTessellation) writer.Write("tessellate:{0} ", "tess");
+                    if (surface.AlphaBlended) writer.Write("alpha ");
+                    if (surface.AddShadowPasses) writer.Write("addshadow ");
+                    if (surface.DualForward) writer.Write("dualforward ");
+                    if (surface.SupportAllShadowTypes) writer.Write("fullforwardshadows ");
+                    if (surface.DisableWhenSoftVegIsOff) writer.Write("softvegetation ");
+                    if (!surface.ApplyAmbient) writer.Write("noambient ");
+                    if (!surface.ApplyVertexLights) writer.Write("novertexlights ");
+                    if (!surface.SupportLightmaps) writer.Write("nolightmap ");
+                    if (!surface.SupportDirectionalLightmaps) writer.Write("nodirlightmap ");
+                    if (!surface.EnableAdditivePass) writer.Write("noforwardadd ");
+                    if (surface.ViewDirPerVert) writer.Write("approxview ");
+                    if (surface.PassHalfDirInLighting) writer.Write("halfasview ");
+                    writer.WriteLine();
+                    if (surface.CgincTerrainEngine) writer.WriteLine("#include {0}", "TerrainEngine.cginc");
+                    if (surface.UseTessellation || surface.CgincTessellation) writer.WriteLine("#include {0}", "Tessellation.cginc");
 
+                    writer.WriteLine("ENDCG");
+
+                } else {
+                    
+                }
                 writer.Indent--;
                 //     } 
                 writer.WriteLine("}");

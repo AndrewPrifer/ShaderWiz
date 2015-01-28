@@ -87,10 +87,10 @@ namespace ShaderWizard {
             _showLightmapSettings = SwGuiLayout.BeginControlGroup(_showLightmapSettings, "Lightmaps");
             if (_showLightmapSettings) {
                 Shader.SupportLightmaps = SwGuiLayout.BeginToggleGroup("Support lightmaps", Shader.SupportLightmaps);
-                Shader.DirectionalLightmaps = EditorGUILayout.ToggleLeft("Support directional lightmaps",
-                    Shader.DirectionalLightmaps);
-                Shader.DualLightmaps = EditorGUILayout.ToggleLeft("Dual lightmaps in forward rendering",
-                    Shader.DualLightmaps);
+                Shader.SupportDirectionalLightmaps = EditorGUILayout.ToggleLeft("Support directional lightmaps",
+                    Shader.SupportDirectionalLightmaps);
+                Shader.DualForward = EditorGUILayout.ToggleLeft("Dual lightmaps in forward rendering",
+                    Shader.DualForward);
                 SwGuiLayout.EndToggleGroup();
             }
             SwGuiLayout.EndControlGroup();
@@ -114,14 +114,14 @@ namespace ShaderWizard {
                     Shader.ForceNoShadowCasting);
                 Shader.IgnoreProjector = EditorGUILayout.ToggleLeft("Ignore projector", Shader.IgnoreProjector);
                 Shader.RenderPosition = (RenderPosition) EditorGUILayout.EnumPopup("Rendering order position:", Shader.RenderPosition);
+                Shader.CommentFinal =
+                    EditorGUILayout.ToggleLeft("Put comments in compiled surface shader",
+                        Shader.CommentFinal);
             }
             SwGuiLayout.EndControlGroup();
 
             _showIncludeSettings = SwGuiLayout.BeginControlGroup(_showIncludeSettings, "Include");
             if (_showIncludeSettings) {
-                Shader.CgincUnityCg = EditorGUILayout.ToggleLeft("UnityCG.cginc", Shader.CgincUnityCg);
-                Shader.CgincAutoLight = EditorGUILayout.ToggleLeft("AutoLight.cginc", Shader.CgincAutoLight);
-                Shader.CgincLighting = EditorGUILayout.ToggleLeft("Lighting.cginc", Shader.CgincLighting);
                 Shader.CgincTerrainEngine = EditorGUILayout.ToggleLeft("TerrainEngine.cginc", Shader.CgincTerrainEngine);
                 Shader.CgincTessellation = EditorGUILayout.ToggleLeft("Tessellation.cginc", Shader.CgincTessellation);
             }
