@@ -45,6 +45,7 @@ namespace ShaderWizard {
                 writer.Indent--;
                 // }
                 writer.WriteLine("}");
+                writer.WriteLine();
             }
 
             foreach (Subshader subshader in shader.GetSubshaders()) {
@@ -61,6 +62,7 @@ namespace ShaderWizard {
                         if (surface.IgnoreProjector) writer.Write("\"IgnoreProjector\" = \"True\" ");
                         // }
                         writer.WriteLine("}");
+                        writer.WriteLine();
                     }
                     writer.WriteLine("CGPROGRAM");
                     // Pragmas
@@ -92,7 +94,12 @@ namespace ShaderWizard {
                     // Includes
                     if (surface.CgincTerrainEngine) writer.WriteLine("#include {0}", "TerrainEngine.cginc");
                     if (surface.CgincTessellation) writer.WriteLine("#include {0}", "Tessellation.cginc");
+                    writer.WriteLine();
+
+                    if (shader.CommentShader) writer.WriteLine("// If you want to access a property, declare it here with the same name and a matching type\n");
+
                     // Input
+                    if (shader.CommentShader) writer.WriteLine("// To use second uv set, declare uv2<TextureName> inside Input");
                     writer.WriteLine("struct Input {");
                     writer.Indent++;
 
@@ -117,57 +124,110 @@ namespace ShaderWizard {
                     }
                     writer.Indent--;
                     writer.WriteLine("};");
+                    writer.WriteLine();
                     // Vertex function
                     if (surface.UseVertexModifier) {
                         writer.Write("void {0} (inout {1} v", "vert", "appdata_full");
                         writer.WriteLine(surface.CustomDataPerVertex ? ", out Input o) {" : ") {");
+                        writer.Indent++;
+                        writer.WriteLine(shader.CommentShader ? "// Modify vertices here" : "");
+                        if (surface.CustomDataPerVertex) {
+                            writer.WriteLine(shader.CommentShader
+                                ? "// To pass custom data to surface function, write to o"
+                                : "");
+                        }
+                        if (shader.CommentShader) writer.WriteLine("// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html");
+                        writer.Indent--;
                         writer.WriteLine("}");
+                        writer.WriteLine();
                     }
                     // Color function
                     if (surface.UseFinalColorModifier) {
                         writer.WriteLine("void {0} (Input IN, SurfaceOutput o, inout fixed4 color) {{", "color");
+                        writer.Indent++;
+                        writer.WriteLine(shader.CommentShader ? "// Modify final color here" : "");
+                        if (shader.CommentShader) writer.WriteLine("// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html");
+                        writer.Indent--;
                         writer.WriteLine("}");
+                        writer.WriteLine();
                     }
-                    // Tessellatio function
+                    // Tessellation function
                     if (surface.UseTessellation) {
                         writer.WriteLine("float4 {0} (appdata v0, appdata v1, appdata v2) {{", "tess");
+                        writer.Indent++;
+                        if (shader.CommentShader) writer.WriteLine("// Implement tessellation here");
+                        writer.WriteLine(shader.CommentShader ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderTessellation.html" : "");
+                        writer.Indent--;
                         writer.WriteLine("}");
+                        writer.WriteLine();
                     }
                     // Custom lighting
                     if (!surface.UseBuiltinLighting) {
                         writer.Write("half4 Lighting{0} (SurfaceOutput s, half3 lightDir, ", "Custom");
                         writer.WriteLine(surface.ViewDirInLighting ? "half3 viewDir, half atten) {" : "half atten) {");
+                        writer.Indent++;
+                        if (shader.CommentShader) writer.WriteLine("// Implement custom lighting here");
+                        writer.WriteLine(shader.CommentShader ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html" : "");
+                        writer.Indent--;
                         writer.WriteLine("}");
+                        writer.WriteLine();
                         if (surface.UsePrePass) {
                             writer.WriteLine("half4 Lighting{0}_PrePass (SurfaceOutput s, half4 light) {{", "Custom");
+                            writer.Indent++;
+                            if (shader.CommentShader) writer.WriteLine("// Implement prepass function for deferred lighting here");
+                            writer.WriteLine(shader.CommentShader ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html" : "");
+                            writer.Indent--;
                             writer.WriteLine("}");
+                            writer.WriteLine();
                         }
                     }
                     // Lightmap decoder
                     if (surface.UseSingleLightMap) {
                         writer.Write("half4 Lighting{0}_SingleLightmap (SurfaceOutput s, fixed4 color", "Custom");
                         writer.WriteLine(surface.ViewDirInSingle ? ", half3 viewDir) {" : ") {");
+                        writer.Indent++;
+                        if (shader.CommentShader) writer.WriteLine("// Implement single lightmap decoder here");
+                        writer.WriteLine(shader.CommentShader ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html" : "");
+                        writer.Indent--;
                         writer.WriteLine("}");
+                        writer.WriteLine();
                     }
                     if (surface.UseDualLightMap) {
                         writer.Write("half4 Lighting{0}_DualLightmap (SurfaceOutput s, fixed4 totalColor, fixed4 indirectOnlyColor, half indirectFade", "Custom");
                         writer.WriteLine(surface.ViewDirInDual ? ", half3 viewDir) {" : ") {");
+                        writer.Indent++;
+                        if (shader.CommentShader) writer.WriteLine("// Implement dual lightmap decoder here");
+                        writer.WriteLine(shader.CommentShader ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html" : "");
+                        writer.Indent--;
                         writer.WriteLine("}");
+                        writer.WriteLine();
                     }
                     if (surface.UseDirectionalLightMap) {
                         writer.Write("half4 Lighting{0}_DirLightmap (SurfaceOutput s, fixed4 color, fixed4 scale", "Custom");
                         writer.WriteLine(surface.ViewDirInDirectional ? ", half3 viewDir, bool surfFuncWritesNormal, out half3 specColor) {" : ", bool surfFuncWritesNormal) {");
+                        writer.Indent++;
+                        if (shader.CommentShader) writer.WriteLine("// Implement directional lightmap decoder here");
+                        writer.WriteLine(shader.CommentShader ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html" : "");
+                        writer.Indent--;
                         writer.WriteLine("}");
+                        writer.WriteLine();
                     }
+                    // Surface function
+                    writer.WriteLine("void surf (Input IN, inout SurfaceOutput o) {");
+                    writer.Indent++;
+                    writer.WriteLine(shader.CommentShader ? "// To create the shader, fill in the fields in o" : "");
+                    if (shader.CommentShader) writer.WriteLine("// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html");
+                    writer.Indent--;
+                    writer.WriteLine("}");
 
                     writer.WriteLine("ENDCG");
-
                 } else {
-                    
+                    // TODO Custom shader
                 }
                 writer.Indent--;
                 //     } 
                 writer.WriteLine("}");
+                writer.WriteLine();
             }
 
             if (shader.UseFallback) {
