@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace ShaderWizard {
         private bool _showProperties;
         private bool _showSubshaders;
         private ReorderableList _subshaderList;
+        private const float Padding = 2f;
 
         #endregion
 
@@ -36,10 +38,10 @@ namespace ShaderWizard {
 
             const float typeWidth = 60f;
             const float defaultWidth = 160f;
-            const float minMaxWidth = 60f;
+            const float miscWidth = 130f;
             const float buttonWidth = 160f;
 
-            InitPropertyList(typeWidth, defaultWidth, minMaxWidth);
+            InitPropertyList(typeWidth, defaultWidth, miscWidth);
             InitSubshaderList(typeWidth, buttonWidth);
         }
 
@@ -101,8 +103,8 @@ namespace ShaderWizard {
                 EditorGUI.LabelField(Utils.AnchorLeft(rect, 0, typeWidth),
                     element.SubshaderType == SubshaderType.Surface ? "Surface" : "Custom");
 
-                element.name = EditorGUI.TextField(Utils.Anchor(rect, typeWidth, buttonWidth), element.name);
-                if (GUI.Button(Utils.AnchorRight(rect, 0, buttonWidth), "Edit subshader settings")) {
+                element.name = EditorGUI.TextField(Utils.Pad(Utils.Anchor(rect, typeWidth, buttonWidth), 0, Padding), element.name);
+                if (GUI.Button(Utils.Pad(Utils.AnchorRight(rect, 0, buttonWidth), Padding, 0), "Edit subshader settings")) {
                     var window = (SurfaceShaderEditor) GetWindow(typeof (SurfaceShaderEditor));
                     window.Shader = (SurfaceShader) element;
                 }
@@ -133,16 +135,16 @@ namespace ShaderWizard {
 
         #region Property list
 
-        private void InitPropertyList(float labelWidth, float defaultWidth, float minMaxWidth) {
+        private void InitPropertyList(float labelWidth, float defaultWidth, float miscWidth) {
             _propertyList = new ReorderableList(_shaderSettings.GetProperties(), typeof (ShaderProperty));
             _propertyList.drawHeaderCallback = rect => {
                 rect.xMin = 28;
                 EditorGUI.LabelField(Utils.AnchorLeft(rect, 0, labelWidth), "Type");
-                var nameRect = Utils.Anchor(rect, labelWidth, defaultWidth + minMaxWidth);
+                var nameRect = Utils.Anchor(rect, labelWidth, defaultWidth + miscWidth);
                 EditorGUI.LabelField(Utils.ShareRect(nameRect, 2, 0), "Name");
                 EditorGUI.LabelField(Utils.ShareRect(nameRect, 2, 1), "Display Name");
-                EditorGUI.LabelField(Utils.AnchorRight(rect, minMaxWidth, defaultWidth), "    Default");
-                EditorGUI.LabelField(Utils.AnchorRight(rect, 0, minMaxWidth), "Miscellaneous");
+                EditorGUI.LabelField(Utils.AnchorRight(rect, miscWidth, defaultWidth), "Default");
+                EditorGUI.LabelField(Utils.AnchorRight(rect, 0, miscWidth), "Miscellaneous");
             };
             _propertyList.drawElementCallback = (rect, index, active, focused) => {
                 var element = (ShaderProperty) _propertyList.list[index];
@@ -150,9 +152,9 @@ namespace ShaderWizard {
                 rect.y += 3;
                 rect.yMax -= 3;
 
-                DrawPropertyName(Utils.Anchor(rect, labelWidth, defaultWidth + minMaxWidth), element);
+                DrawPropertyName(Utils.Anchor(rect, labelWidth, defaultWidth + miscWidth), element);
                 DrawPropertySpecific(Utils.AnchorLeft(rect, 0, labelWidth),
-                    Utils.AnchorRight(rect, 0, minMaxWidth), Utils.AnchorRight(rect, minMaxWidth, defaultWidth),
+                    Utils.AnchorRight(rect, 0, miscWidth), Utils.Pad(Utils.AnchorRight(rect, miscWidth, defaultWidth), Padding, Padding),
                     element);
             };
             _propertyList.onAddDropdownCallback = (rect, list) => {
@@ -167,51 +169,51 @@ namespace ShaderWizard {
         }
 
         private void DrawPropertyName(Rect nameRect, ShaderProperty property) {
-            property.Name = EditorGUI.TextField(Utils.ShareRect(nameRect, 2, 0), property.Name);
-            property.DisplayName = EditorGUI.TextField(Utils.ShareRect(nameRect, 2, 1),
+            property.Name = EditorGUI.TextField(Utils.Pad(Utils.ShareRect(nameRect, 2, 0), 0, Padding), property.Name);
+            property.DisplayName = EditorGUI.TextField(Utils.Pad(Utils.ShareRect(nameRect, 2, 1), Padding, 0),
                 property.DisplayName);
         }
 
-        private void DrawPropertySpecific(Rect labelRect, Rect minMaxRect, Rect defaultRect, ShaderProperty element) {
-            const float equalsPercentage = 0.1f;
-            var equalsRect = Utils.DivideRect(defaultRect, 0, equalsPercentage);
-            var valueRect = Utils.DivideRect(defaultRect, 1, equalsPercentage);
+        private void DrawPropertySpecific(Rect labelRect, Rect miscRect, Rect defaultRect, ShaderProperty element) {
             switch (element.PropertyType) {
                 case PropertyType.Range:
                     var rangeProperty = (RangeProperty) element;
                     EditorGUI.LabelField(labelRect, "Range");
-                    rangeProperty.MinValue = EditorGUI.FloatField(Utils.ShareRect(minMaxRect, 2, 0),
+                    var labelWidth1 = EditorGUIUtility.labelWidth;
+                    EditorGUIUtility.labelWidth = Utils.TextWidth("Min: ");
+                    rangeProperty.MinValue = EditorGUI.FloatField(Utils.Pad(Utils.ShareRect(miscRect, 2, 0), Padding, Padding), "Min: ",
                         rangeProperty.MinValue);
-                    rangeProperty.MaxValue = EditorGUI.FloatField(Utils.ShareRect(minMaxRect, 2, 1),
+                    EditorGUIUtility.labelWidth = Utils.TextWidth("Max: ");
+                    rangeProperty.MaxValue = EditorGUI.FloatField(Utils.Pad(Utils.ShareRect(miscRect, 2, 1), Padding, 0), "Max: ",
                         rangeProperty.MaxValue);
-                    EditorGUI.LabelField(equalsRect, "=");
-                    rangeProperty.DefaultValue = EditorGUI.Slider(valueRect, rangeProperty.DefaultValue,
+                    EditorGUIUtility.labelWidth = labelWidth1;
+                    rangeProperty.DefaultValue = EditorGUI.Slider(defaultRect, rangeProperty.DefaultValue,
                         rangeProperty.MinValue,
                         rangeProperty.MaxValue);
                     break;
                 case PropertyType.Color:
                     var colorProperty = (ColorProperty) element;
                     EditorGUI.LabelField(labelRect, "Color");
-                    EditorGUI.LabelField(equalsRect, "=");
-                    colorProperty.DefaultValue = EditorGUI.ColorField(valueRect, colorProperty.DefaultValue);
+                    colorProperty.DefaultValue = EditorGUI.ColorField(defaultRect, colorProperty.DefaultValue);
                     break;
                 case PropertyType.Texture:
                     var texProperty = (TextureProperty) element;
                     EditorGUI.LabelField(labelRect, "Texture");
-                    EditorGUI.LabelField(equalsRect, "=");
-                    texProperty.DefaultValue = (DefaultTexture) EditorGUI.EnumPopup(valueRect, texProperty.DefaultValue);
+                    labelWidth1 = EditorGUIUtility.labelWidth;
+                    EditorGUIUtility.labelWidth = Utils.TextWidth("Auto UV: ");
+                    texProperty.TexGenMode = (TexGenMode)EditorGUI.EnumPopup(miscRect, "Auto UV: ", texProperty.TexGenMode);
+                    EditorGUIUtility.labelWidth = labelWidth1;
+                    texProperty.DefaultValue = (DefaultTexture)EditorGUI.EnumPopup(defaultRect, texProperty.DefaultValue);
                     break;
                 case PropertyType.Float:
                     var floatProperty = (FloatProperty) element;
                     EditorGUI.LabelField(labelRect, "Float");
-                    EditorGUI.LabelField(equalsRect, "=");
-                    floatProperty.DefaultValue = EditorGUI.FloatField(valueRect, floatProperty.DefaultValue);
+                    floatProperty.DefaultValue = EditorGUI.FloatField(defaultRect, floatProperty.DefaultValue);
                     break;
                 case PropertyType.Vector:
                     var vecProperty = (VectorProperty) element;
                     EditorGUI.LabelField(labelRect, "Vector");
-                    EditorGUI.LabelField(equalsRect, "=");
-                    vecProperty.DefaultValue = SwGui.Vector4Field(valueRect, vecProperty.DefaultValue);
+                    vecProperty.DefaultValue = SwGui.Vector4Field(defaultRect, vecProperty.DefaultValue);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
