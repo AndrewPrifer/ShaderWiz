@@ -17,7 +17,7 @@ namespace ShaderWizard {
             if (GUI.Button(position, shaderPopupContent, style)) {
                 var menuCommand = new MenuCommand(new ShaderEventHandler(), 0);
                 // Create dummy material to make it not highlight any shaders inside:
-                var tmpStr = "Shader \"Hidden/tmp_shdr\"{SubShader{Pass{}}}";
+                const string tmpStr = "Shader \"Hidden/tmp_shdr\"{SubShader{Pass{}}}";
                 var temp = new Material(tmpStr);
                 // Rebuild shader menu:
                 UnityEditorInternal.InternalEditorUtility.SetupShaderMenu(temp);

@@ -68,7 +68,7 @@ namespace ShaderWizard {
                 Shader.WorldNormalInInput = EditorGUILayout.ToggleLeft("World normal vector", Shader.WorldNormalInInput);
                 SwGuiLayout.Separator();
                 Shader.OutNormalSpecified =
-                    EditorGUILayout.ToggleLeft("Output normal is specified (in surface function)",
+                    EditorGUILayout.ToggleLeft("Surface function writes to output normal",
                         Shader.OutNormalSpecified);
             }
             SwGuiLayout.EndControlGroup();
@@ -116,7 +116,7 @@ namespace ShaderWizard {
                 Shader.IgnoreProjector = EditorGUILayout.ToggleLeft("Ignore projector", Shader.IgnoreProjector);
                 Shader.RenderPosition = (RenderPosition) EditorGUILayout.EnumPopup("Rendering order position:", Shader.RenderPosition);
                 Shader.CommentFinal =
-                    EditorGUILayout.ToggleLeft("Put comments in compiled surface shader",
+                    EditorGUILayout.ToggleLeft("Put debug comments in compiled surface shader",
                         Shader.CommentFinal);
             }
             SwGuiLayout.EndControlGroup();
