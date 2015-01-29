@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.IO;
+using UnityEngine;
 
 namespace ShaderWizard {
     internal static class ShaderGenerator {
@@ -19,16 +20,20 @@ namespace ShaderWizard {
                     switch (property.PropertyType) {
                         case PropertyType.Range:
                             var range = (RangeProperty) property;
-                            writer.WriteLine("{0} (\"{1}\", Range ({2}, {3})) = {4}", range.Name, range.DisplayName, range.MinValue, range.MaxValue, range.DefaultValue);
+                            writer.WriteLine("{0} (\"{1}\", Range ({2}, {3})) = {4}", range.Name, range.DisplayName,
+                                range.MinValue, range.MaxValue, range.DefaultValue);
                             break;
                         case PropertyType.Color:
                             var color = (ColorProperty) property;
-                            writer.WriteLine("{0} (\"{1}\", Color) = ({2},{3},{4},{5})", color.Name, color.DisplayName, color.DefaultValue.r, color.DefaultValue.g, color.DefaultValue.b, color.DefaultValue.a);
+                            writer.WriteLine("{0} (\"{1}\", Color) = ({2},{3},{4},{5})", color.Name, color.DisplayName,
+                                color.DefaultValue.r, color.DefaultValue.g, color.DefaultValue.b, color.DefaultValue.a);
                             break;
                         case PropertyType.Texture:
                             // todo texgen, textype
                             var tex = (TextureProperty) property;
-                            writer.WriteLine("{0} (\"{1}\", {2}) = \"{3}\" {{}}", tex.Name, tex.DisplayName, tex.TextureType.ToString().Replace("Two", "2"), tex.DefaultValue);
+                            writer.WriteLine("{0} (\"{1}\", {2}) = \"{3}\" {{{4}}}", tex.Name, tex.DisplayName,
+                                tex.TextureType.ToString().Replace("Two", "2"), tex.DefaultValue,
+                                tex.TexGenMode == TexGenMode.None ? "" : "TexGen " + tex.TexGenMode.ToString());
                             break;
                         case PropertyType.Float:
                             var num = (FloatProperty) property;
@@ -36,7 +41,9 @@ namespace ShaderWizard {
                             break;
                         case PropertyType.Vector:
                             var vector = (VectorProperty) property;
-                            writer.WriteLine("{0} (\"{1}\", Vector) = ({2},{3},{4},{5})", vector.Name, vector.DisplayName, vector.DefaultValue.x, vector.DefaultValue.y, vector.DefaultValue.z, vector.DefaultValue.w);
+                            writer.WriteLine("{0} (\"{1}\", Vector) = ({2},{3},{4},{5})", vector.Name,
+                                vector.DisplayName, vector.DefaultValue.x, vector.DefaultValue.y, vector.DefaultValue.z,
+                                vector.DefaultValue.w);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -54,10 +61,12 @@ namespace ShaderWizard {
                 writer.Indent++;
                 if (subshader.SubshaderType == SubshaderType.Surface) {
                     var surface = (SurfaceShader) subshader;
-                    if (surface.RenderPosition != RenderPosition.Geometry || surface.ForceNoShadowCasting || surface.IgnoreProjector) {
+                    if (surface.RenderPosition != RenderPosition.Geometry || surface.ForceNoShadowCasting ||
+                        surface.IgnoreProjector) {
                         // Tags { 
                         writer.Write("Tags { ");
-                        if (surface.RenderPosition != RenderPosition.Geometry) writer.Write("\"Queue\" = \"{0}\" ", surface.RenderPosition);
+                        if (surface.RenderPosition != RenderPosition.Geometry)
+                            writer.Write("\"Queue\" = \"{0}\" ", surface.RenderPosition);
                         if (surface.ForceNoShadowCasting) writer.Write("\"ForceNoShadowCasting\" = \"True\" ");
                         if (surface.IgnoreProjector) writer.Write("\"IgnoreProjector\" = \"True\" ");
                         // }
@@ -96,10 +105,13 @@ namespace ShaderWizard {
                     if (surface.CgincTessellation) writer.WriteLine("#include {0}", "Tessellation.cginc");
                     writer.WriteLine();
 
-                    if (shader.CommentShader) writer.WriteLine("// If you want to access a property, declare it here with the same name and a matching type\n");
+                    if (shader.CommentShader)
+                        writer.WriteLine(
+                            "// If you want to access a property, declare it here with the same name and a matching type\n");
 
                     // Input
-                    if (shader.CommentShader) writer.WriteLine("// To use second uv set, declare uv2<TextureName> inside Input");
+                    if (shader.CommentShader)
+                        writer.WriteLine("// To use second uv set, declare uv2<TextureName> inside Input");
                     writer.WriteLine("struct Input {");
                     writer.Indent++;
 
@@ -136,7 +148,8 @@ namespace ShaderWizard {
                                 ? "// To pass custom data to surface function, write to o"
                                 : "");
                         }
-                        if (shader.CommentShader) writer.WriteLine("// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html");
+                        if (shader.CommentShader)
+                            writer.WriteLine("// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html");
                         writer.Indent--;
                         writer.WriteLine("}");
                         writer.WriteLine();
@@ -146,7 +159,8 @@ namespace ShaderWizard {
                         writer.WriteLine("void {0} (Input IN, SurfaceOutput o, inout fixed4 color) {{", "color");
                         writer.Indent++;
                         writer.WriteLine(shader.CommentShader ? "// Modify final color here" : "");
-                        if (shader.CommentShader) writer.WriteLine("// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html");
+                        if (shader.CommentShader)
+                            writer.WriteLine("// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html");
                         writer.Indent--;
                         writer.WriteLine("}");
                         writer.WriteLine();
@@ -156,7 +170,9 @@ namespace ShaderWizard {
                         writer.WriteLine("float4 {0} (appdata v0, appdata v1, appdata v2) {{", "tess");
                         writer.Indent++;
                         if (shader.CommentShader) writer.WriteLine("// Implement tessellation here");
-                        writer.WriteLine(shader.CommentShader ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderTessellation.html" : "");
+                        writer.WriteLine(shader.CommentShader
+                            ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderTessellation.html"
+                            : "");
                         writer.Indent--;
                         writer.WriteLine("}");
                         writer.WriteLine();
@@ -167,15 +183,20 @@ namespace ShaderWizard {
                         writer.WriteLine(surface.ViewDirInLighting ? "half3 viewDir, half atten) {" : "half atten) {");
                         writer.Indent++;
                         if (shader.CommentShader) writer.WriteLine("// Implement custom lighting here");
-                        writer.WriteLine(shader.CommentShader ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html" : "");
+                        writer.WriteLine(shader.CommentShader
+                            ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html"
+                            : "");
                         writer.Indent--;
                         writer.WriteLine("}");
                         writer.WriteLine();
                         if (surface.UsePrePass) {
                             writer.WriteLine("half4 Lighting{0}_PrePass (SurfaceOutput s, half4 light) {{", "Custom");
                             writer.Indent++;
-                            if (shader.CommentShader) writer.WriteLine("// Implement prepass function for deferred lighting here");
-                            writer.WriteLine(shader.CommentShader ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html" : "");
+                            if (shader.CommentShader)
+                                writer.WriteLine("// Implement prepass function for deferred lighting here");
+                            writer.WriteLine(shader.CommentShader
+                                ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html"
+                                : "");
                             writer.Indent--;
                             writer.WriteLine("}");
                             writer.WriteLine();
@@ -187,27 +208,38 @@ namespace ShaderWizard {
                         writer.WriteLine(surface.ViewDirInSingle ? ", half3 viewDir) {" : ") {");
                         writer.Indent++;
                         if (shader.CommentShader) writer.WriteLine("// Implement single lightmap decoder here");
-                        writer.WriteLine(shader.CommentShader ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html" : "");
+                        writer.WriteLine(shader.CommentShader
+                            ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html"
+                            : "");
                         writer.Indent--;
                         writer.WriteLine("}");
                         writer.WriteLine();
                     }
                     if (surface.UseDualLightMap) {
-                        writer.Write("half4 Lighting{0}_DualLightmap (SurfaceOutput s, fixed4 totalColor, fixed4 indirectOnlyColor, half indirectFade", "Custom");
+                        writer.Write(
+                            "half4 Lighting{0}_DualLightmap (SurfaceOutput s, fixed4 totalColor, fixed4 indirectOnlyColor, half indirectFade",
+                            "Custom");
                         writer.WriteLine(surface.ViewDirInDual ? ", half3 viewDir) {" : ") {");
                         writer.Indent++;
                         if (shader.CommentShader) writer.WriteLine("// Implement dual lightmap decoder here");
-                        writer.WriteLine(shader.CommentShader ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html" : "");
+                        writer.WriteLine(shader.CommentShader
+                            ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html"
+                            : "");
                         writer.Indent--;
                         writer.WriteLine("}");
                         writer.WriteLine();
                     }
                     if (surface.UseDirectionalLightMap) {
-                        writer.Write("half4 Lighting{0}_DirLightmap (SurfaceOutput s, fixed4 color, fixed4 scale", "Custom");
-                        writer.WriteLine(surface.ViewDirInDirectional ? ", half3 viewDir, bool surfFuncWritesNormal, out half3 specColor) {" : ", bool surfFuncWritesNormal) {");
+                        writer.Write("half4 Lighting{0}_DirLightmap (SurfaceOutput s, fixed4 color, fixed4 scale",
+                            "Custom");
+                        writer.WriteLine(surface.ViewDirInDirectional
+                            ? ", half3 viewDir, bool surfFuncWritesNormal, out half3 specColor) {"
+                            : ", bool surfFuncWritesNormal) {");
                         writer.Indent++;
                         if (shader.CommentShader) writer.WriteLine("// Implement directional lightmap decoder here");
-                        writer.WriteLine(shader.CommentShader ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html" : "");
+                        writer.WriteLine(shader.CommentShader
+                            ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html"
+                            : "");
                         writer.Indent--;
                         writer.WriteLine("}");
                         writer.WriteLine();
@@ -216,7 +248,8 @@ namespace ShaderWizard {
                     writer.WriteLine("void surf (Input IN, inout SurfaceOutput o) {");
                     writer.Indent++;
                     writer.WriteLine(shader.CommentShader ? "// To create the shader, fill in the fields in o" : "");
-                    if (shader.CommentShader) writer.WriteLine("// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html");
+                    if (shader.CommentShader)
+                        writer.WriteLine("// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html");
                     writer.Indent--;
                     writer.WriteLine("}");
 
