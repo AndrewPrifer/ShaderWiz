@@ -49,7 +49,7 @@ namespace ShaderWizard {
             UseDualLightMap = false;
             UseSingleLightMap = false;
             UsePrePass = false;
-            IncludeViewDirInLighting = false;
+            ViewDirInLighting = false;
             LightingModel = LightingModel.Lambert;
             UseBuiltinLighting = true;
             PassHalfDirInLighting = false;
@@ -68,7 +68,7 @@ namespace ShaderWizard {
         public bool PassHalfDirInLighting { get; set; }
         public bool UseBuiltinLighting { get; set; }
         public LightingModel LightingModel { get; set; }
-        public bool IncludeViewDirInLighting { get; set; }
+        public bool ViewDirInLighting { get; set; }
         public bool UsePrePass { get; set; }
         public bool UseSingleLightMap { get; set; }
         public bool UseDualLightMap { get; set; }

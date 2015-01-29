@@ -87,6 +87,7 @@ namespace ShaderWizard {
                     if (!surface.EnableAdditivePass) writer.Write("noforwardadd ");
                     if (surface.ViewDirPerVert) writer.Write("approxview ");
                     if (surface.PassHalfDirInLighting) writer.Write("halfasview ");
+                    if (surface.CommentFinal) writer.Write("debug ");
                     writer.WriteLine();
                     // Includes
                     if (surface.CgincTerrainEngine) writer.WriteLine("#include {0}", "TerrainEngine.cginc");
@@ -118,8 +119,44 @@ namespace ShaderWizard {
                     writer.WriteLine("};");
                     // Vertex function
                     if (surface.UseVertexModifier) {
-                        writer.Write("void vert (inout {0} v", "appdata_full");
+                        writer.Write("void {0} (inout {1} v", "vert", "appdata_full");
                         writer.WriteLine(surface.CustomDataPerVertex ? ", out Input o) {" : ") {");
+                        writer.WriteLine("}");
+                    }
+                    // Color function
+                    if (surface.UseFinalColorModifier) {
+                        writer.WriteLine("void {0} (Input IN, SurfaceOutput o, inout fixed4 color) {{", "color");
+                        writer.WriteLine("}");
+                    }
+                    // Tessellatio function
+                    if (surface.UseTessellation) {
+                        writer.WriteLine("float4 {0} (appdata v0, appdata v1, appdata v2) {{", "tess");
+                        writer.WriteLine("}");
+                    }
+                    // Custom lighting
+                    if (!surface.UseBuiltinLighting) {
+                        writer.Write("half4 Lighting{0} (SurfaceOutput s, half3 lightDir, ", "Custom");
+                        writer.WriteLine(surface.ViewDirInLighting ? "half3 viewDir, half atten) {" : "half atten) {");
+                        writer.WriteLine("}");
+                        if (surface.UsePrePass) {
+                            writer.WriteLine("half4 Lighting{0}_PrePass (SurfaceOutput s, half4 light) {{", "Custom");
+                            writer.WriteLine("}");
+                        }
+                    }
+                    // Lightmap decoder
+                    if (surface.UseSingleLightMap) {
+                        writer.Write("half4 Lighting{0}_SingleLightmap (SurfaceOutput s, fixed4 color", "Custom");
+                        writer.WriteLine(surface.ViewDirInSingle ? ", half3 viewDir) {" : ") {");
+                        writer.WriteLine("}");
+                    }
+                    if (surface.UseDualLightMap) {
+                        writer.Write("half4 Lighting{0}_DualLightmap (SurfaceOutput s, fixed4 totalColor, fixed4 indirectOnlyColor, half indirectFade", "Custom");
+                        writer.WriteLine(surface.ViewDirInDual ? ", half3 viewDir) {" : ") {");
+                        writer.WriteLine("}");
+                    }
+                    if (surface.UseDirectionalLightMap) {
+                        writer.Write("half4 Lighting{0}_DirLightmap (SurfaceOutput s, fixed4 color, fixed4 scale", "Custom");
+                        writer.WriteLine(surface.ViewDirInDirectional ? ", half3 viewDir, bool surfFuncWritesNormal, out half3 specColor) {" : ", bool surfFuncWritesNormal) {");
                         writer.WriteLine("}");
                     }
 

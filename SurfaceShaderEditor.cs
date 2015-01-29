@@ -32,10 +32,10 @@ namespace ShaderWizard {
                 Shader.LightingModel =
                     (LightingModel) EditorGUILayout.EnumPopup("Lighting model:", Shader.LightingModel);
                 SwGuiLayout.EndToggleGroup();
-                Shader.UseBuiltinLighting = SwGuiLayout.BeginToggleGroup("Use custom lighting model",
+                Shader.UseBuiltinLighting = !SwGuiLayout.BeginToggleGroup("Use custom lighting model",
                     !Shader.UseBuiltinLighting);
-                Shader.IncludeViewDirInLighting = EditorGUILayout.ToggleLeft("Include view direction parameter",
-                    Shader.IncludeViewDirInLighting);
+                Shader.ViewDirInLighting = EditorGUILayout.ToggleLeft("Include view direction parameter",
+                    Shader.ViewDirInLighting);
                 Shader.UsePrePass = EditorGUILayout.ToggleLeft("Use prepass function (deferred lighting)", Shader.UsePrePass);
                 SwGuiLayout.EndToggleGroup();
                 EditorGUILayout.LabelField("Use custom lightmap decoder function:");
