@@ -91,7 +91,7 @@ namespace ShaderWizard {
                     // Includes
                     if (surface.CgincTerrainEngine) writer.WriteLine("#include {0}", "TerrainEngine.cginc");
                     if (surface.CgincTessellation) writer.WriteLine("#include {0}", "Tessellation.cginc");
-
+                    // Input
                     writer.WriteLine("struct Input {");
                     writer.Indent++;
 
@@ -106,13 +106,22 @@ namespace ShaderWizard {
                     if (surface.VertColorInInput) writer.WriteLine("float4 vertColor : COLOR;");
                     if (surface.SsPositionInInput) writer.WriteLine("float4 screenPos;");
                     if (surface.WsPositionInInput) writer.WriteLine("float3 worldPos;");
-                    if (surface.WorldReflectionVectorInInput) writer.Write("float3 worldRefl");
-                    writer.WriteLine(surface.OutNormalSpecified ? "; INTERNAL_DATA" : ";");
-                    if (surface.WorldNormalInInput) writer.Write("float3 worldNormal");
-                    writer.WriteLine(surface.OutNormalSpecified ? "; INTERNAL_DATA" : ";");
-
+                    if (surface.WorldReflectionVectorInInput) {
+                        writer.Write("float3 worldRefl");
+                        writer.WriteLine(surface.OutNormalSpecified ? "; INTERNAL_DATA" : ";");
+                    }
+                    if (surface.WorldNormalInInput) {
+                        writer.Write("float3 worldNormal");
+                        writer.WriteLine(surface.OutNormalSpecified ? "; INTERNAL_DATA" : ";");
+                    }
                     writer.Indent--;
                     writer.WriteLine("};");
+                    // Vertex function
+                    if (surface.UseVertexModifier) {
+                        writer.Write("void vert (inout {0} v", "appdata_full");
+                        writer.WriteLine(surface.CustomDataPerVertex ? ", out Input o) {" : ") {");
+                        writer.WriteLine("}");
+                    }
 
                     writer.WriteLine("ENDCG");
 
