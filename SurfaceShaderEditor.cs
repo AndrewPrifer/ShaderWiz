@@ -56,8 +56,9 @@ namespace ShaderWizard {
             }
             SwGuiLayout.EndControlGroup();
 
-            _showInputSettings = SwGuiLayout.BeginControlGroup(_showInputSettings, "Optional Shader Input Values");
+            _showInputSettings = SwGuiLayout.BeginControlGroup(_showInputSettings, "Shader Input Values");
             if (_showInputSettings) {
+                Shader.UvInInput = EditorGUILayout.ToggleLeft("Texture coordinates", Shader.UvInInput);
                 Shader.ViewDirInInput = EditorGUILayout.ToggleLeft("View direction", Shader.ViewDirInInput);
                 Shader.VertColorInInput = EditorGUILayout.ToggleLeft("Per-vertex color", Shader.VertColorInInput);
                 Shader.SsPositionInInput = EditorGUILayout.ToggleLeft("Screen space position", Shader.SsPositionInInput);

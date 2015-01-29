@@ -63,6 +63,7 @@ namespace ShaderWizard {
                         writer.WriteLine("}");
                     }
                     writer.WriteLine("CGPROGRAM");
+                    // Pragmas
                     writer.Write("#pragma ");
                     writer.Write("surface {0} ", "surf");
                     if (surface.UseBuiltinLighting) {
@@ -70,6 +71,7 @@ namespace ShaderWizard {
                     } else {
                         writer.Write("Lighting{0} ", "Custom");
                     }
+
                     if (surface.UseVertexModifier) writer.Write("vertex:{0} ", "vert");
                     if (surface.UseFinalColorModifier) writer.Write("finalcolor:{0} ", "color");
                     if (surface.UseTessellation) writer.Write("tessellate:{0} ", "tess");
@@ -86,8 +88,31 @@ namespace ShaderWizard {
                     if (surface.ViewDirPerVert) writer.Write("approxview ");
                     if (surface.PassHalfDirInLighting) writer.Write("halfasview ");
                     writer.WriteLine();
+                    // Includes
                     if (surface.CgincTerrainEngine) writer.WriteLine("#include {0}", "TerrainEngine.cginc");
-                    if (surface.UseTessellation || surface.CgincTessellation) writer.WriteLine("#include {0}", "Tessellation.cginc");
+                    if (surface.CgincTessellation) writer.WriteLine("#include {0}", "Tessellation.cginc");
+
+                    writer.WriteLine("struct Input {");
+                    writer.Indent++;
+
+                    if (surface.UvInInput) {
+                        foreach (ShaderProperty property in shader.GetProperties()) {
+                            if (property.PropertyType == PropertyType.Texture) {
+                                writer.WriteLine("float2 uv{0};", property.Name);
+                            }
+                        }
+                    }
+                    if (surface.ViewDirInInput) writer.WriteLine("float3 viewDir;");
+                    if (surface.VertColorInInput) writer.WriteLine("float4 vertColor : COLOR;");
+                    if (surface.SsPositionInInput) writer.WriteLine("float4 screenPos;");
+                    if (surface.WsPositionInInput) writer.WriteLine("float3 worldPos;");
+                    if (surface.WorldReflectionVectorInInput) writer.Write("float3 worldRefl");
+                    writer.WriteLine(surface.OutNormalSpecified ? "; INTERNAL_DATA" : ";");
+                    if (surface.WorldNormalInInput) writer.Write("float3 worldNormal");
+                    writer.WriteLine(surface.OutNormalSpecified ? "; INTERNAL_DATA" : ";");
+
+                    writer.Indent--;
+                    writer.WriteLine("};");
 
                     writer.WriteLine("ENDCG");
 
