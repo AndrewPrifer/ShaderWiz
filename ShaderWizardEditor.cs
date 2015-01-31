@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Cryptography;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -37,8 +36,8 @@ namespace ShaderWizard {
             if (_shaderSettings == null) Init();
 
             const float typeWidth = 60f;
-            const float defaultWidth = 160f;
-            const float miscWidth = 130f;
+            const float defaultWidth = 200f;
+            const float miscWidth = 140f;
             const float buttonWidth = 160f;
 
             InitPropertyList(typeWidth, defaultWidth, miscWidth);

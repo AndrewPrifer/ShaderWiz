@@ -143,11 +143,8 @@ namespace ShaderWizard {
                         writer.WriteLine(surface.CustomDataPerVertex ? ", out Input o) {" : ") {");
                         writer.Indent++;
                         writer.WriteLine(shader.CommentShader ? "// Modify vertices here" : "");
-                        if (surface.CustomDataPerVertex) {
-                            writer.WriteLine(shader.CommentShader
-                                ? "// To pass custom data to surface function, write to o"
-                                : "");
-                        }
+                        if (surface.CustomDataPerVertex && shader.CommentShader)
+                            writer.WriteLine("// To pass custom data to surface function, write to o");
                         if (shader.CommentShader)
                             writer.WriteLine("// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html");
                         writer.Indent--;
@@ -266,6 +263,8 @@ namespace ShaderWizard {
             if (shader.UseFallback) {
                 // Fallback "fallback"
                 writer.WriteLine("Fallback \"{0}\"", shader.Fallback);
+            } else {
+                writer.WriteLine("Fallback Off");
             }
 
             writer.Indent--;
