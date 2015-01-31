@@ -98,8 +98,8 @@ namespace ShaderWizard {
                     if (!surface.EnableAdditivePass) writer.Write("noforwardadd ");
                     if (surface.ViewDirPerVert) writer.Write("approxview ");
                     if (surface.PassHalfDirInLighting) writer.Write("halfasview ");
-                    if (surface.CommentFinal) writer.Write("debug ");
                     writer.WriteLine();
+                    if (surface.CommentFinal) writer.WriteLine("#pragma debug");
                     // Includes
                     if (surface.CgincTerrainEngine) writer.WriteLine("#include {0}", "TerrainEngine.cginc");
                     if (surface.CgincTessellation) writer.WriteLine("#include {0}", "Tessellation.cginc");
@@ -126,20 +126,15 @@ namespace ShaderWizard {
                     if (surface.VertColorInInput) writer.WriteLine("float4 vertColor : COLOR;");
                     if (surface.SsPositionInInput) writer.WriteLine("float4 screenPos;");
                     if (surface.WsPositionInInput) writer.WriteLine("float3 worldPos;");
-                    if (surface.WorldReflectionVectorInInput) {
-                        writer.Write("float3 worldRefl");
-                        writer.WriteLine(surface.OutNormalSpecified ? "; INTERNAL_DATA" : ";");
-                    }
-                    if (surface.WorldNormalInInput) {
-                        writer.Write("float3 worldNormal");
-                        writer.WriteLine(surface.OutNormalSpecified ? "; INTERNAL_DATA" : ";");
-                    }
+                    if (surface.WorldReflectionVectorInInput) writer.WriteLine("float3 worldRefl;");
+                    if (surface.WorldNormalInInput) writer.WriteLine("float3 worldNormal;");
+                    if (surface.OutNormalSpecified && (surface.WorldReflectionVectorInInput || surface.WorldNormalInInput)) writer.WriteLine("INTERNAL_DATA");
                     writer.Indent--;
                     writer.WriteLine("};");
                     writer.WriteLine();
                     // Vertex function
                     if (surface.UseVertexModifier) {
-                        writer.Write("void {0} (inout {1} v", "vert", "appdata_full");
+                        writer.Write("void {0} (inout {1} v", "vert", "appdata_full"); // Always takes appdata_full!
                         writer.WriteLine(surface.CustomDataPerVertex ? ", out Input o) {" : ") {");
                         writer.Indent++;
                         writer.WriteLine(shader.CommentShader ? "// Modify vertices here" : "");
