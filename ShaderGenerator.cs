@@ -8,14 +8,15 @@ namespace ShaderWizard {
         public static string Generate(ShaderSettings shader, string tabString) {
             var writer = new IndentedTextWriter(new StringWriter(), tabString);
 
-            // Shader "Name" {
+            // Shader name
             writer.WriteLine("Shader \"{0}\" {{", shader.Name);
             writer.Indent++;
 
+            // Shader properties
             if (shader.GetProperties().Count != 0) {
-                // Properties {
                 writer.WriteLine("Properties {");
                 writer.Indent++;
+
                 foreach (ShaderProperty property in shader.GetProperties()) {
                     switch (property.PropertyType) {
                         case PropertyType.Range:
@@ -32,7 +33,7 @@ namespace ShaderWizard {
                             // todo texgen, textype
                             var tex = (TextureProperty) property;
                             writer.WriteLine("{0} (\"{1}\", {2}) = \"{3}\" {{{4}}}", tex.Name, tex.DisplayName,
-                                tex.TextureType.ToString().Replace("Two", "2"), tex.DefaultValue,
+                                tex.TextureType.ToString().Replace("Two", "2"), tex.DefaultValue.ToString().ToLower(),
                                 tex.TexGenMode == TexGenMode.None ? "" : "TexGen " + tex.TexGenMode.ToString());
                             break;
                         case PropertyType.Float:
@@ -49,34 +50,40 @@ namespace ShaderWizard {
                             throw new ArgumentOutOfRangeException();
                     }
                 }
+
                 writer.Indent--;
-                // }
                 writer.WriteLine("}");
                 writer.WriteLine();
             }
 
+            // Subshaders
             foreach (Subshader subshader in shader.GetSubshaders()) {
-                // Subshader {
                 writer.WriteLine("Subshader {");
                 writer.Indent++;
+
+                // Surface shader
                 if (subshader.SubshaderType == SubshaderType.Surface) {
                     var surface = (SurfaceShader) subshader;
+
+                    // Tags
                     if (surface.RenderPosition != RenderPosition.Geometry || surface.ForceNoShadowCasting ||
                         surface.IgnoreProjector) {
-                        // Tags { 
                         writer.Write("Tags { ");
                         if (surface.RenderPosition != RenderPosition.Geometry)
                             writer.Write("\"Queue\" = \"{0}\" ", surface.RenderPosition);
                         if (surface.ForceNoShadowCasting) writer.Write("\"ForceNoShadowCasting\" = \"True\" ");
                         if (surface.IgnoreProjector) writer.Write("\"IgnoreProjector\" = \"True\" ");
-                        // }
                         writer.WriteLine("}");
                         writer.WriteLine();
                     }
+
+                    // HLSL begin
                     writer.WriteLine("CGPROGRAM");
+
                     // Pragmas
                     writer.Write("#pragma ");
                     writer.Write("surface {0} ", "surf");
+
                     if (surface.UseBuiltinLighting) {
                         writer.Write(surface.LightingModel + " ");
                     } else {
@@ -99,7 +106,10 @@ namespace ShaderWizard {
                     if (surface.ViewDirPerVert) writer.Write("approxview ");
                     if (surface.PassHalfDirInLighting) writer.Write("halfasview ");
                     writer.WriteLine();
+
+                    // #pragma debug on separate line
                     if (surface.CommentFinal) writer.WriteLine("#pragma debug");
+
                     // Includes
                     if (surface.CgincTerrainEngine) writer.WriteLine("#include {0}", "TerrainEngine.cginc");
                     if (surface.CgincTessellation) writer.WriteLine("#include {0}", "Tessellation.cginc");
@@ -122,16 +132,20 @@ namespace ShaderWizard {
                             }
                         }
                     }
+
                     if (surface.ViewDirInInput) writer.WriteLine("float3 viewDir;");
                     if (surface.VertColorInInput) writer.WriteLine("float4 vertColor : COLOR;");
                     if (surface.SsPositionInInput) writer.WriteLine("float4 screenPos;");
                     if (surface.WsPositionInInput) writer.WriteLine("float3 worldPos;");
                     if (surface.WorldReflectionVectorInInput) writer.WriteLine("float3 worldRefl;");
                     if (surface.WorldNormalInInput) writer.WriteLine("float3 worldNormal;");
-                    if (surface.OutNormalSpecified && (surface.WorldReflectionVectorInInput || surface.WorldNormalInInput)) writer.WriteLine("INTERNAL_DATA");
+                    if (surface.OutNormalSpecified &&
+                        (surface.WorldReflectionVectorInInput || surface.WorldNormalInInput))
+                        writer.WriteLine("INTERNAL_DATA");
                     writer.Indent--;
                     writer.WriteLine("};");
                     writer.WriteLine();
+
                     // Vertex function
                     if (surface.UseVertexModifier) {
                         writer.Write("void {0} (inout {1} v", "vert", "appdata_full"); // Always takes appdata_full!
@@ -146,6 +160,7 @@ namespace ShaderWizard {
                         writer.WriteLine("}");
                         writer.WriteLine();
                     }
+
                     // Color function
                     if (surface.UseFinalColorModifier) {
                         writer.WriteLine("void {0} (Input IN, SurfaceOutput o, inout fixed4 color) {{", "color");
@@ -157,6 +172,7 @@ namespace ShaderWizard {
                         writer.WriteLine("}");
                         writer.WriteLine();
                     }
+
                     // Tessellation function
                     if (surface.UseTessellation) {
                         writer.WriteLine("float4 {0} (appdata v0, appdata v1, appdata v2) {{", "tess");
@@ -169,6 +185,7 @@ namespace ShaderWizard {
                         writer.WriteLine("}");
                         writer.WriteLine();
                     }
+
                     // Custom lighting
                     if (!surface.UseBuiltinLighting) {
                         writer.Write("half4 Lighting{0} (SurfaceOutput s, half3 lightDir, ", "Custom");
@@ -181,6 +198,7 @@ namespace ShaderWizard {
                         writer.Indent--;
                         writer.WriteLine("}");
                         writer.WriteLine();
+
                         if (surface.UsePrePass) {
                             writer.WriteLine("half4 Lighting{0}_PrePass (SurfaceOutput s, half4 light) {{", "Custom");
                             writer.Indent++;
@@ -194,7 +212,9 @@ namespace ShaderWizard {
                             writer.WriteLine();
                         }
                     }
+
                     // Lightmap decoder
+                    // Single
                     if (surface.UseSingleLightMap) {
                         writer.Write("half4 Lighting{0}_SingleLightmap (SurfaceOutput s, fixed4 color", "Custom");
                         writer.WriteLine(surface.ViewDirInSingle ? ", half3 viewDir) {" : ") {");
@@ -207,6 +227,8 @@ namespace ShaderWizard {
                         writer.WriteLine("}");
                         writer.WriteLine();
                     }
+
+                    // Dual
                     if (surface.UseDualLightMap) {
                         writer.Write(
                             "half4 Lighting{0}_DualLightmap (SurfaceOutput s, fixed4 totalColor, fixed4 indirectOnlyColor, half indirectFade",
@@ -221,6 +243,8 @@ namespace ShaderWizard {
                         writer.WriteLine("}");
                         writer.WriteLine();
                     }
+
+                    // Directional
                     if (surface.UseDirectionalLightMap) {
                         writer.Write("half4 Lighting{0}_DirLightmap (SurfaceOutput s, fixed4 color, fixed4 scale",
                             "Custom");
@@ -236,6 +260,7 @@ namespace ShaderWizard {
                         writer.WriteLine("}");
                         writer.WriteLine();
                     }
+
                     // Surface function
                     writer.WriteLine("void surf (Input IN, inout SurfaceOutput o) {");
                     writer.Indent++;
@@ -244,26 +269,23 @@ namespace ShaderWizard {
                         writer.WriteLine("// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html");
                     writer.Indent--;
                     writer.WriteLine("}");
-
                     writer.WriteLine("ENDCG");
                 } else {
                     // TODO Custom shader
                 }
                 writer.Indent--;
-                //     } 
                 writer.WriteLine("}");
                 writer.WriteLine();
             }
 
+            // Fallback shader
             if (shader.UseFallback) {
-                // Fallback "fallback"
                 writer.WriteLine("Fallback \"{0}\"", shader.Fallback);
             } else {
                 writer.WriteLine("Fallback Off");
             }
 
             writer.Indent--;
-            // }
             writer.Write("}");
             return writer.InnerWriter.ToString();
         }

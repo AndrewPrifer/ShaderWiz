@@ -15,54 +15,72 @@ namespace ShaderWizard {
 
         private void OnGUI() {
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
+
+            // Custom functions group
             _showFunctionsSettings = SwGuiLayout.BeginControlGroup(_showFunctionsSettings, "Custom Functions");
             if (_showFunctionsSettings) {
+
                 Shader.UseVertexModifier =
                     SwGuiLayout.BeginToggleGroup(new GUIContent("Use vertex modifier", HelpText.VertexModifier),
                         Shader.UseVertexModifier);
+
                 Shader.CustomDataPerVertex =
                     EditorGUILayout.ToggleLeft(
                         new GUIContent("Calculate custom data per-vertex", HelpText.CustomDataPerVertex),
                         Shader.CustomDataPerVertex);
+
                 SwGuiLayout.EndToggleGroup();
                 Shader.UseFinalColorModifier =
                     EditorGUILayout.ToggleLeft(new GUIContent("Use final color modifier", HelpText.FinalColorModifier),
                         Shader.UseFinalColorModifier);
+
                 Shader.UseTessellation =
                     EditorGUILayout.ToggleLeft(new GUIContent("Use DX11 tessellation", HelpText.Tessellation),
                         Shader.UseTessellation);
+
                 Shader.PassHalfDirInLighting =
                     EditorGUILayout.ToggleLeft(
                         new GUIContent("Pass half-direction vector into ligthing function", HelpText.HalfDirInLighting),
                         Shader.PassHalfDirInLighting);
+
                 Shader.UseBuiltinLighting =
                     SwGuiLayout.BeginToggleGroup(
                         new GUIContent("Use built-in lighting model", HelpText.BuiltinLighting),
                         Shader.UseBuiltinLighting);
+
                 Shader.LightingModel =
                     (LightingModel) EditorGUILayout.EnumPopup("Lighting model:", Shader.LightingModel);
                 SwGuiLayout.EndToggleGroup();
+
                 Shader.UseBuiltinLighting =
                     !SwGuiLayout.BeginToggleGroup(new GUIContent("Use custom lighting model", HelpText.CustomLighting),
                         !Shader.UseBuiltinLighting);
+
                 Shader.ViewDirInLighting = EditorGUILayout.ToggleLeft("Include view direction parameter",
                     Shader.ViewDirInLighting);
+
                 Shader.UsePrePass = EditorGUILayout.ToggleLeft("Use prepass function (deferred lighting)",
                     Shader.UsePrePass);
+
                 SwGuiLayout.EndToggleGroup();
+
+                // Custom lightmap decoders
                 EditorGUILayout.LabelField("Use custom lightmap decoder function:");
                 EditorGUI.indentLevel++;
+
                 Shader.UseSingleLightMap =
                     SwGuiLayout.BeginToggleGroup(new GUIContent("Single", HelpText.SingleLightmap),
                         Shader.UseSingleLightMap);
                 Shader.ViewDirInSingle = EditorGUILayout.ToggleLeft("Include view direction parameter",
                     Shader.ViewDirInSingle);
                 SwGuiLayout.EndToggleGroup();
+
                 Shader.UseDualLightMap = SwGuiLayout.BeginToggleGroup(new GUIContent("Dual", HelpText.DualLightmap),
                     Shader.UseDualLightMap);
                 Shader.ViewDirInDual = EditorGUILayout.ToggleLeft("Include view direction parameter",
                     Shader.ViewDirInDual);
                 SwGuiLayout.EndToggleGroup();
+
                 Shader.UseDirectionalLightMap =
                     SwGuiLayout.BeginToggleGroup(new GUIContent("Directional", HelpText.DirectionalLightmap),
                         Shader.UseDirectionalLightMap);
@@ -73,6 +91,7 @@ namespace ShaderWizard {
             }
             SwGuiLayout.EndControlGroup();
 
+            // Shader input
             _showInputSettings = SwGuiLayout.BeginControlGroup(_showInputSettings, "Shader Input Values");
             if (_showInputSettings) {
                 Shader.UvInInput = EditorGUILayout.ToggleLeft("Texture coordinates", Shader.UvInInput);
@@ -91,6 +110,7 @@ namespace ShaderWizard {
             }
             SwGuiLayout.EndControlGroup();
 
+            // Lighting group
             _showLightingSettings = SwGuiLayout.BeginControlGroup(_showLightingSettings, "Lighting");
             if (_showLightingSettings) {
                 Shader.ApplyAmbient = EditorGUILayout.ToggleLeft("Apply ambient lights", Shader.ApplyAmbient);
@@ -105,6 +125,7 @@ namespace ShaderWizard {
             }
             SwGuiLayout.EndControlGroup();
 
+            //Lightmaps group
             _showLightmapSettings = SwGuiLayout.BeginControlGroup(_showLightmapSettings, "Lightmaps");
             if (_showLightmapSettings) {
                 Shader.SupportLightmaps = SwGuiLayout.BeginToggleGroup("Support lightmaps", Shader.SupportLightmaps);
@@ -120,6 +141,7 @@ namespace ShaderWizard {
             }
             SwGuiLayout.EndControlGroup();
 
+            // Shadows group
             _showShadowSettings = SwGuiLayout.BeginControlGroup(_showShadowSettings, "Shadows");
             if (_showShadowSettings) {
                 Shader.AddShadowPasses = EditorGUILayout.ToggleLeft("Add shadow passes", Shader.AddShadowPasses);
@@ -129,6 +151,7 @@ namespace ShaderWizard {
             }
             SwGuiLayout.EndControlGroup();
 
+            // Miscellaneous group
             _showMiscSettings = SwGuiLayout.BeginControlGroup(_showMiscSettings, "Misc Settings");
             if (_showMiscSettings) {
                 Shader.AlphaBlended = EditorGUILayout.ToggleLeft("Alpha blended", Shader.AlphaBlended);
@@ -146,6 +169,7 @@ namespace ShaderWizard {
             }
             SwGuiLayout.EndControlGroup();
 
+            // Include group
             _showIncludeSettings = SwGuiLayout.BeginControlGroup(_showIncludeSettings, "Include");
             if (_showIncludeSettings) {
                 Shader.CgincTerrainEngine = EditorGUILayout.ToggleLeft("TerrainEngine.cginc", Shader.CgincTerrainEngine);

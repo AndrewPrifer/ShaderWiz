@@ -5,7 +5,7 @@ namespace ShaderWizard {
         public TextureProperty() {
             TextureType = TextureType.TwoD;
             TexGenMode = TexGenMode.None;
-            DefaultValue = DefaultTexture.empty;
+            DefaultValue = DefaultTexture.Empty;
         }
 
         public TextureType TextureType { get; set; }

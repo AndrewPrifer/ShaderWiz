@@ -35,6 +35,7 @@ namespace ShaderWizard {
         private void OnEnable() {
             if (_shaderSettings == null) Init();
 
+            // Property GUI sizes
             const float typeWidth = 60f;
             const float defaultWidth = 200f;
             const float miscWidth = 140f;
@@ -47,20 +48,24 @@ namespace ShaderWizard {
         private void OnGUI() {
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
+            // Shader name
             _shaderSettings.Name = EditorGUILayout.TextField(new GUIContent("Name", HelpText.ShaderName), _shaderSettings.Name);
-
+            
+            // Properies group
             _showProperties = SwGuiLayout.BeginControlGroup(_showProperties, new GUIContent("Properties", HelpText.ShaderProperties));
             if (_showProperties) {
                 _propertyList.DoLayoutList();
             }
             SwGuiLayout.EndControlGroup();
 
+            // Subshaders group
             _showSubshaders = SwGuiLayout.BeginControlGroup(_showSubshaders, new GUIContent("Subshaders", HelpText.Subshaders));
             if (_showSubshaders) {
                 _subshaderList.DoLayoutList();
             }
             SwGuiLayout.EndControlGroup();
 
+            // Fallback group
             _showFallbackSettings = SwGuiLayout.BeginControlGroup(_showFallbackSettings, new GUIContent("Fallback", HelpText.Fallback));
             if (_showFallbackSettings) {
                 _shaderSettings.UseFallback = SwGuiLayout.BeginToggleGroup("Use fallback shader",
@@ -70,6 +75,7 @@ namespace ShaderWizard {
             }
             SwGuiLayout.EndControlGroup();
 
+            // Comments group
             _showCommentSettings = SwGuiLayout.BeginControlGroup(_showCommentSettings, "Comments");
             if (_showCommentSettings) {
                 _shaderSettings.CommentShader =
@@ -88,11 +94,15 @@ namespace ShaderWizard {
 
         private void InitSubshaderList(float typeWidth, float buttonWidth) {
             _subshaderList = new ReorderableList(_shaderSettings.GetSubshaders(), typeof (Subshader));
+
+            // List header
             _subshaderList.drawHeaderCallback = rect => {
                 rect.xMin = 28;
                 EditorGUI.LabelField(Utils.AnchorLeft(rect, 0, typeWidth), "Type");
                 EditorGUI.LabelField(Utils.Anchor(rect, typeWidth, buttonWidth), "Name");
             };
+
+            // List elements
             _subshaderList.drawElementCallback = (rect, index, active, focused) => {
                 var element = (Subshader) _subshaderList.list[index];
 
@@ -101,13 +111,15 @@ namespace ShaderWizard {
 
                 EditorGUI.LabelField(Utils.AnchorLeft(rect, 0, typeWidth),
                     element.SubshaderType == SubshaderType.Surface ? "Surface" : "Custom");
-
                 element.name = EditorGUI.TextField(Utils.Pad(Utils.Anchor(rect, typeWidth, buttonWidth), 0, Padding), element.name);
+                
                 if (GUI.Button(Utils.Pad(Utils.AnchorRight(rect, 0, buttonWidth), Padding, 0), "Edit subshader settings")) {
                     var window = (SurfaceShaderEditor) GetWindow(typeof (SurfaceShaderEditor));
                     window.Shader = (SurfaceShader) element;
                 }
             };
+
+            // Add to list
             _subshaderList.onAddDropdownCallback = (rect, list) => {
                 var menu = new GenericMenu();
                 menu.AddItem(new GUIContent("Surface Shader"), false, AddShaderHandler, SubshaderType.Surface);
@@ -136,6 +148,8 @@ namespace ShaderWizard {
 
         private void InitPropertyList(float labelWidth, float defaultWidth, float miscWidth) {
             _propertyList = new ReorderableList(_shaderSettings.GetProperties(), typeof (ShaderProperty));
+
+            // List header
             _propertyList.drawHeaderCallback = rect => {
                 rect.xMin = 28;
                 EditorGUI.LabelField(Utils.AnchorLeft(rect, 0, labelWidth), "Type");
@@ -145,6 +159,8 @@ namespace ShaderWizard {
                 EditorGUI.LabelField(Utils.AnchorRight(rect, miscWidth, defaultWidth), "Default");
                 EditorGUI.LabelField(Utils.AnchorRight(rect, 0, miscWidth), "Miscellaneous");
             };
+
+            // List elements
             _propertyList.drawElementCallback = (rect, index, active, focused) => {
                 var element = (ShaderProperty) _propertyList.list[index];
 
@@ -156,6 +172,8 @@ namespace ShaderWizard {
                     Utils.AnchorRight(rect, 0, miscWidth), Utils.Pad(Utils.AnchorRight(rect, miscWidth, defaultWidth), Padding, Padding),
                     element);
             };
+
+            // Add to list
             _propertyList.onAddDropdownCallback = (rect, list) => {
                 var menu = new GenericMenu();
                 menu.AddItem(new GUIContent("Range"), false, AddPropertyHandler, PropertyType.Range);
@@ -175,6 +193,8 @@ namespace ShaderWizard {
 
         private void DrawPropertySpecific(Rect labelRect, Rect miscRect, Rect defaultRect, ShaderProperty element) {
             switch (element.PropertyType) {
+
+                // Range
                 case PropertyType.Range:
                     var rangeProperty = (RangeProperty) element;
                     EditorGUI.LabelField(labelRect, "Range");
@@ -190,11 +210,15 @@ namespace ShaderWizard {
                         rangeProperty.MinValue,
                         rangeProperty.MaxValue);
                     break;
+
+                // Color
                 case PropertyType.Color:
                     var colorProperty = (ColorProperty) element;
                     EditorGUI.LabelField(labelRect, "Color");
                     colorProperty.DefaultValue = EditorGUI.ColorField(defaultRect, colorProperty.DefaultValue);
                     break;
+
+                // Texture
                 case PropertyType.Texture:
                     var texProperty = (TextureProperty) element;
                     EditorGUI.LabelField(labelRect, "Texture");
@@ -204,11 +228,15 @@ namespace ShaderWizard {
                     EditorGUIUtility.labelWidth = labelWidth1;
                     texProperty.DefaultValue = (DefaultTexture)EditorGUI.EnumPopup(defaultRect, texProperty.DefaultValue);
                     break;
+
+                // Float
                 case PropertyType.Float:
                     var floatProperty = (FloatProperty) element;
                     EditorGUI.LabelField(labelRect, "Float");
                     floatProperty.DefaultValue = EditorGUI.FloatField(defaultRect, floatProperty.DefaultValue);
                     break;
+
+                // Vector
                 case PropertyType.Vector:
                     var vecProperty = (VectorProperty) element;
                     EditorGUI.LabelField(labelRect, "Vector");
