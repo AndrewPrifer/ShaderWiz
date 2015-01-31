@@ -47,21 +47,21 @@ namespace ShaderWizard {
         private void OnGUI() {
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
-            _shaderSettings.Name = EditorGUILayout.TextField("Name", _shaderSettings.Name);
+            _shaderSettings.Name = EditorGUILayout.TextField(new GUIContent("Name", HelpText.ShaderName), _shaderSettings.Name);
 
-            _showProperties = SwGuiLayout.BeginControlGroup(_showProperties, "Properties");
+            _showProperties = SwGuiLayout.BeginControlGroup(_showProperties, new GUIContent("Properties", HelpText.ShaderProperties));
             if (_showProperties) {
                 _propertyList.DoLayoutList();
             }
             SwGuiLayout.EndControlGroup();
 
-            _showSubshaders = SwGuiLayout.BeginControlGroup(_showSubshaders, "Subshaders");
+            _showSubshaders = SwGuiLayout.BeginControlGroup(_showSubshaders, new GUIContent("Subshaders", HelpText.Subshaders));
             if (_showSubshaders) {
                 _subshaderList.DoLayoutList();
             }
             SwGuiLayout.EndControlGroup();
 
-            _showFallbackSettings = SwGuiLayout.BeginControlGroup(_showFallbackSettings, "Fallback");
+            _showFallbackSettings = SwGuiLayout.BeginControlGroup(_showFallbackSettings, new GUIContent("Fallback", HelpText.Fallback));
             if (_showFallbackSettings) {
                 _shaderSettings.UseFallback = SwGuiLayout.BeginToggleGroup("Use fallback shader",
                     _shaderSettings.UseFallback);

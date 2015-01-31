@@ -34,10 +34,14 @@ namespace ShaderWizard {
 
         #region Control group
 
-        public static bool BeginControlGroup(bool foldout, string content) {
+        public static bool BeginControlGroup(bool foldout, GUIContent content) {
             EditorGUILayout.BeginVertical("HelpBox");
             foldout = EditorGUILayout.Foldout(foldout, content);
             return foldout;
+        }
+
+        public static bool BeginControlGroup(bool foldout, string content) {
+            return BeginControlGroup(foldout, new GUIContent(content));
         }
 
         public static void EndControlGroup() {
@@ -48,22 +52,22 @@ namespace ShaderWizard {
 
         #region Toggle group
 
-        public static bool BeginToggleGroup(string label, bool toggle, GUIStyle labelStyle) {
-            toggle = EditorGUILayout.ToggleLeft(label, toggle, labelStyle);
+        public static bool BeginToggleGroup(GUIContent content, bool toggle) {
+            toggle = EditorGUILayout.ToggleLeft(content, toggle, EditorStyles.label);
             EditorGUI.indentLevel++;
             EditorGUI.BeginDisabledGroup(!toggle);
             GUILayout.BeginVertical();
             return toggle;
         }
 
+        public static bool BeginToggleGroup(string label, bool toggle) {
+            return BeginToggleGroup(new GUIContent(label), toggle);
+        }
+
         public static void EndToggleGroup() {
             GUILayout.EndVertical();
             EditorGUI.EndDisabledGroup();
             EditorGUI.indentLevel--;
-        }
-
-        public static bool BeginToggleGroup(string label, bool toggle) {
-            return BeginToggleGroup(label, toggle, EditorStyles.label);
         }
 
         #endregion
