@@ -115,9 +115,11 @@ namespace ShaderWizard {
                     if (surface.CgincTessellation) writer.WriteLine("#include {0}", "\"Tessellation.cginc\"");
                     writer.WriteLine();
 
-                    if (shader.CommentShader)
+                    if (shader.CommentShader) {
                         writer.WriteLine(
-                            "// If you want to access a property, declare it here with the same name and a matching type.\n");
+                            "// If you want to access a property, declare it here with the same name and a matching type.");
+                        writer.WriteLine();
+                    }
 
                     // Input
                     if (shader.CommentShader)
@@ -269,7 +271,7 @@ namespace ShaderWizard {
                     // Surface function
                     writer.WriteLine("void surf (Input IN, inout SurfaceOutput o) {");
                     writer.Indent++;
-                    writer.WriteLine(shader.CommentShader ? "// To create the shader, fill in the fields in o." : "");
+                    writer.WriteLine(shader.CommentShader ? "// To complete the shader, fill in the fields in o." : "");
                     if (shader.CommentShader)
                         writer.WriteLine("// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html");
                     writer.Indent--;
