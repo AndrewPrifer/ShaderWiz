@@ -94,7 +94,9 @@ namespace ShaderWizard {
                     break;
                 case SubshaderType.Custom:
                     throw new InvalidEnumArgumentException();
+#pragma warning disable 0162
                     break;
+#pragma warning restore 0162
                 default:
                     throw new ArgumentOutOfRangeException("subshaderType");
             }

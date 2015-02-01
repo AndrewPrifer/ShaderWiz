@@ -40,7 +40,7 @@ namespace ShaderWizard {
             const float typeWidth = 60f;
             const float defaultWidth = 200f;
             const float miscWidth = 140f;
-            const float buttonWidth = 340f;
+            const float buttonWidth = defaultWidth + miscWidth;
 
             InitPropertyList(typeWidth, defaultWidth, miscWidth);
             InitSubshaderList(typeWidth, buttonWidth);

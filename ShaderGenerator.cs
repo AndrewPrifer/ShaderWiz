@@ -117,11 +117,11 @@ namespace ShaderWizard {
 
                     if (shader.CommentShader)
                         writer.WriteLine(
-                            "// If you want to access a property, declare it here with the same name and a matching type\n");
+                            "// If you want to access a property, declare it here with the same name and a matching type.\n");
 
                     // Input
                     if (shader.CommentShader)
-                        writer.WriteLine("// To use second uv set, declare uv2<TextureName> inside Input");
+                        writer.WriteLine("// To use second uv set, declare uv2<TextureName> inside Input.");
                     writer.WriteLine("struct Input {");
                     writer.Indent++;
 
@@ -142,6 +142,10 @@ namespace ShaderWizard {
                     if (surface.OutNormalSpecified &&
                         (surface.WorldReflectionVectorInInput || surface.WorldNormalInInput))
                         writer.WriteLine("INTERNAL_DATA");
+                    if (shader.CommentShader && surface.CustomDataPerVertex) {
+                        writer.WriteLine();
+                        writer.WriteLine("// Declare custom input members here. Name cannot begin with 'uv'.");
+                    }
                     writer.Indent--;
                     writer.WriteLine("};");
                     writer.WriteLine();
@@ -151,9 +155,10 @@ namespace ShaderWizard {
                         writer.Write("void {0} (inout {1} v", "vert", "appdata_full"); // Always takes appdata_full!
                         writer.WriteLine(surface.CustomDataPerVertex ? ", out Input o) {" : ") {");
                         writer.Indent++;
+                        if (surface.CustomDataPerVertex) writer.WriteLine("UNITY_INITIALIZE_OUTPUT(Input,o);");
                         writer.WriteLine(shader.CommentShader ? "// Modify vertices here" : "");
                         if (surface.CustomDataPerVertex && shader.CommentShader)
-                            writer.WriteLine("// To pass custom data to surface function, write to o");
+                            writer.WriteLine("// To pass custom data to surface function, write to o.");
                         if (shader.CommentShader)
                             writer.WriteLine("// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html");
                         writer.Indent--;
@@ -165,7 +170,7 @@ namespace ShaderWizard {
                     if (surface.UseFinalColorModifier) {
                         writer.WriteLine("void {0} (Input IN, SurfaceOutput o, inout fixed4 color) {{", "color");
                         writer.Indent++;
-                        writer.WriteLine(shader.CommentShader ? "// Modify final color here" : "");
+                        writer.WriteLine(shader.CommentShader ? "// Modify final color here." : "");
                         if (shader.CommentShader)
                             writer.WriteLine("// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html");
                         writer.Indent--;
@@ -177,7 +182,7 @@ namespace ShaderWizard {
                     if (surface.UseTessellation) {
                         writer.WriteLine("float4 {0} (appdata v0, appdata v1, appdata v2) {{", "tess");
                         writer.Indent++;
-                        if (shader.CommentShader) writer.WriteLine("// Implement tessellation here");
+                        if (shader.CommentShader) writer.WriteLine("// Implement tessellation here.");
                         writer.WriteLine(shader.CommentShader
                             ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderTessellation.html"
                             : "");
@@ -191,7 +196,7 @@ namespace ShaderWizard {
                         writer.Write("half4 Lighting{0} (SurfaceOutput s, half3 lightDir, ", "Custom");
                         writer.WriteLine(surface.ViewDirInLighting ? "half3 viewDir, half atten) {" : "half atten) {");
                         writer.Indent++;
-                        if (shader.CommentShader) writer.WriteLine("// Implement custom lighting here");
+                        if (shader.CommentShader) writer.WriteLine("// Implement custom lighting here.");
                         writer.WriteLine(shader.CommentShader
                             ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html"
                             : "");
@@ -219,7 +224,7 @@ namespace ShaderWizard {
                         writer.Write("half4 Lighting{0}_SingleLightmap (SurfaceOutput s, fixed4 color", "Custom");
                         writer.WriteLine(surface.ViewDirInSingle ? ", half3 viewDir) {" : ") {");
                         writer.Indent++;
-                        if (shader.CommentShader) writer.WriteLine("// Implement single lightmap decoder here");
+                        if (shader.CommentShader) writer.WriteLine("// Implement single lightmap decoder here.");
                         writer.WriteLine(shader.CommentShader
                             ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html"
                             : "");
@@ -235,7 +240,7 @@ namespace ShaderWizard {
                             "Custom");
                         writer.WriteLine(surface.ViewDirInDual ? ", half3 viewDir) {" : ") {");
                         writer.Indent++;
-                        if (shader.CommentShader) writer.WriteLine("// Implement dual lightmap decoder here");
+                        if (shader.CommentShader) writer.WriteLine("// Implement dual lightmap decoder here.");
                         writer.WriteLine(shader.CommentShader
                             ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html"
                             : "");
@@ -252,7 +257,7 @@ namespace ShaderWizard {
                             ? ", half3 viewDir, bool surfFuncWritesNormal, out half3 specColor) {"
                             : ", bool surfFuncWritesNormal) {");
                         writer.Indent++;
-                        if (shader.CommentShader) writer.WriteLine("// Implement directional lightmap decoder here");
+                        if (shader.CommentShader) writer.WriteLine("// Implement directional lightmap decoder here.");
                         writer.WriteLine(shader.CommentShader
                             ? "// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderLighting.html"
                             : "");
@@ -264,7 +269,7 @@ namespace ShaderWizard {
                     // Surface function
                     writer.WriteLine("void surf (Input IN, inout SurfaceOutput o) {");
                     writer.Indent++;
-                    writer.WriteLine(shader.CommentShader ? "// To create the shader, fill in the fields in o" : "");
+                    writer.WriteLine(shader.CommentShader ? "// To create the shader, fill in the fields in o." : "");
                     if (shader.CommentShader)
                         writer.WriteLine("// Help: http://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html");
                     writer.Indent--;
