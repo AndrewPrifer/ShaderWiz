@@ -111,8 +111,8 @@ namespace ShaderWizard {
                     if (surface.CommentFinal) writer.WriteLine("#pragma debug");
 
                     // Includes
-                    if (surface.CgincTerrainEngine) writer.WriteLine("#include {0}", "TerrainEngine.cginc");
-                    if (surface.CgincTessellation) writer.WriteLine("#include {0}", "Tessellation.cginc");
+                    if (surface.CgincTerrainEngine) writer.WriteLine("#include {0}", "\"TerrainEngine.cginc\"");
+                    if (surface.CgincTessellation) writer.WriteLine("#include {0}", "\"Tessellation.cginc\"");
                     writer.WriteLine();
 
                     if (shader.CommentShader)

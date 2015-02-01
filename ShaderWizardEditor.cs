@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -39,7 +40,7 @@ namespace ShaderWizard {
             const float typeWidth = 60f;
             const float defaultWidth = 200f;
             const float miscWidth = 140f;
-            const float buttonWidth = 160f;
+            const float buttonWidth = 340f;
 
             InitPropertyList(typeWidth, defaultWidth, miscWidth);
             InitSubshaderList(typeWidth, buttonWidth);
@@ -84,7 +85,16 @@ namespace ShaderWizard {
             SwGuiLayout.EndControlGroup();
 
             if (GUILayout.Button("Generate", "LargeButton")) {
-                Debug.Log(ShaderGenerator.Generate(_shaderSettings, "    "));
+                //Debug.Log(ShaderGenerator.Generate(_shaderSettings, "    "));
+                var path = EditorUtility.SaveFilePanel(
+                    "Save shader",
+                    "",
+                    "NewShader.shader",
+                    "shader");
+
+                if (path.Length != 0) {
+                    File.WriteAllText(path, ShaderGenerator.Generate(_shaderSettings, "    "));
+                }
             }
 
             EditorGUILayout.EndScrollView();
