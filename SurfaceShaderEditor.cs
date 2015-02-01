@@ -19,7 +19,6 @@ namespace ShaderWizard {
             // Custom functions group
             _showFunctionsSettings = SwGuiLayout.BeginControlGroup(_showFunctionsSettings, "Custom Functions");
             if (_showFunctionsSettings) {
-
                 Shader.UseVertexModifier =
                     SwGuiLayout.BeginToggleGroup(new GUIContent("Use vertex modifier", HelpText.VertexModifier),
                         Shader.UseVertexModifier);
@@ -172,8 +171,12 @@ namespace ShaderWizard {
             // Include group
             _showIncludeSettings = SwGuiLayout.BeginControlGroup(_showIncludeSettings, "Include");
             if (_showIncludeSettings) {
-                Shader.CgincTerrainEngine = EditorGUILayout.ToggleLeft("TerrainEngine.cginc", Shader.CgincTerrainEngine);
-                Shader.CgincTessellation = EditorGUILayout.ToggleLeft("Tessellation.cginc", Shader.CgincTessellation);
+                Shader.CgincTerrainEngine =
+                    EditorGUILayout.ToggleLeft(new GUIContent("TerrainEngine.cginc", HelpText.TerrainInclude),
+                        Shader.CgincTerrainEngine);
+                Shader.CgincTessellation =
+                    EditorGUILayout.ToggleLeft(new GUIContent("Tessellation.cginc", HelpText.TessellationInclude),
+                        Shader.CgincTessellation);
             }
             SwGuiLayout.EndControlGroup();
             EditorGUILayout.EndScrollView();

@@ -45,5 +45,9 @@
 
         public const string ForwardAdditive =
             "Disabling it makes the shader support one full directional light, with all other lights computed per-vertex/SH.";
+
+        public const string TerrainInclude = "Helper functions for Terrain & Vegetation shaders.";
+
+        public const string TessellationInclude = "Helper functions for tessellation.";
     }
 }
