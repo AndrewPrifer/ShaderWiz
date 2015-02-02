@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -42,32 +45,38 @@ namespace ShaderWizard {
             const float miscWidth = 140f;
             const float buttonWidth = defaultWidth + miscWidth;
 
+            minSize = new Vector2(typeWidth + buttonWidth + 230, 100);
             InitPropertyList(typeWidth, defaultWidth, miscWidth);
             InitSubshaderList(typeWidth, buttonWidth);
         }
 
         private void OnGUI() {
+            //Debug.Log(position);
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
             // Shader name
-            _shaderSettings.Name = EditorGUILayout.TextField(new GUIContent("Name", HelpText.ShaderName), _shaderSettings.Name);
-            
+            _shaderSettings.Name = EditorGUILayout.TextField(new GUIContent("Name", HelpText.ShaderName),
+                _shaderSettings.Name);
+
             // Properies group
-            _showProperties = SwGuiLayout.BeginControlGroup(_showProperties, new GUIContent("Properties", HelpText.ShaderProperties));
+            _showProperties = SwGuiLayout.BeginControlGroup(_showProperties,
+                new GUIContent("Properties", HelpText.ShaderProperties));
             if (_showProperties) {
                 _propertyList.DoLayoutList();
             }
             SwGuiLayout.EndControlGroup();
 
             // Subshaders group
-            _showSubshaders = SwGuiLayout.BeginControlGroup(_showSubshaders, new GUIContent("Subshaders", HelpText.Subshaders));
+            _showSubshaders = SwGuiLayout.BeginControlGroup(_showSubshaders,
+                new GUIContent("Subshaders", HelpText.Subshaders));
             if (_showSubshaders) {
                 _subshaderList.DoLayoutList();
             }
             SwGuiLayout.EndControlGroup();
 
             // Fallback group
-            _showFallbackSettings = SwGuiLayout.BeginControlGroup(_showFallbackSettings, new GUIContent("Fallback", HelpText.Fallback));
+            _showFallbackSettings = SwGuiLayout.BeginControlGroup(_showFallbackSettings,
+                new GUIContent("Fallback", HelpText.Fallback));
             if (_showFallbackSettings) {
                 _shaderSettings.UseFallback = SwGuiLayout.BeginToggleGroup("Use fallback shader",
                     _shaderSettings.UseFallback);
@@ -86,18 +95,30 @@ namespace ShaderWizard {
 
             if (GUILayout.Button("Generate", "LargeButton")) {
                 //Debug.Log(ShaderGenerator.Generate(_shaderSettings, "    "));
-                var path = EditorUtility.SaveFilePanel(
-                    "Save shader",
-                    "",
-                    "NewShader.shader",
-                    "shader");
+                if (!IsCorrect()) {
+                    EditorUtility.DisplayDialog("Error", "Invalid property name.", "Ok");
+                } else {
+                    var path = EditorUtility.SaveFilePanel(
+                        "Save shader",
+                        "",
+                        _shaderSettings.Name + ".shader",
+                        "shader");
 
-                if (path.Length != 0) {
-                    File.WriteAllText(path, ShaderGenerator.Generate(_shaderSettings, "    "));
+                    if (path.Length != 0) {
+                        File.WriteAllText(path, ShaderGenerator.Generate(_shaderSettings, "    "));
+                    }
                 }
             }
 
             EditorGUILayout.EndScrollView();
+        }
+
+        private bool IsCorrect() {
+            // Validity check
+            return
+                _shaderSettings.GetProperties()
+                    .Cast<ShaderProperty>()
+                    .All(property => Regex.IsMatch(property.Name, @"^[_a-zA-Z][_a-zA-Z0-9]*$"));
         }
 
         #region Subshader list
@@ -121,8 +142,9 @@ namespace ShaderWizard {
 
                 EditorGUI.LabelField(Utils.AnchorLeft(rect, 0, typeWidth),
                     element.SubshaderType == SubshaderType.Surface ? "Surface" : "Custom");
-                element.name = EditorGUI.TextField(Utils.Pad(Utils.Anchor(rect, typeWidth, buttonWidth), 0, Padding), element.name);
-                
+                element.name = EditorGUI.TextField(Utils.Pad(Utils.Anchor(rect, typeWidth, buttonWidth), 0, Padding),
+                    element.name);
+
                 if (GUI.Button(Utils.Pad(Utils.AnchorRight(rect, 0, buttonWidth), Padding, 0), "Edit subshader settings")) {
                     var window = (SurfaceShaderEditor) GetWindow(typeof (SurfaceShaderEditor));
                     window.Shader = (SurfaceShader) element;
@@ -179,7 +201,8 @@ namespace ShaderWizard {
 
                 DrawPropertyName(Utils.Anchor(rect, labelWidth, defaultWidth + miscWidth), element);
                 DrawPropertySpecific(Utils.AnchorLeft(rect, 0, labelWidth),
-                    Utils.AnchorRight(rect, 0, miscWidth), Utils.Pad(Utils.AnchorRight(rect, miscWidth, defaultWidth), Padding, Padding),
+                    Utils.AnchorRight(rect, 0, miscWidth),
+                    Utils.Pad(Utils.AnchorRight(rect, miscWidth, defaultWidth), Padding, Padding),
                     element);
             };
 
@@ -203,17 +226,18 @@ namespace ShaderWizard {
 
         private void DrawPropertySpecific(Rect labelRect, Rect miscRect, Rect defaultRect, ShaderProperty element) {
             switch (element.PropertyType) {
-
                 // Range
                 case PropertyType.Range:
                     var rangeProperty = (RangeProperty) element;
                     EditorGUI.LabelField(labelRect, "Range");
                     var labelWidth1 = EditorGUIUtility.labelWidth;
                     EditorGUIUtility.labelWidth = Utils.TextWidth("Min: ");
-                    rangeProperty.MinValue = EditorGUI.FloatField(Utils.Pad(Utils.ShareRect(miscRect, 2, 0), Padding, Padding), "Min: ",
-                        rangeProperty.MinValue);
+                    rangeProperty.MinValue =
+                        EditorGUI.FloatField(Utils.Pad(Utils.ShareRect(miscRect, 2, 0), Padding, Padding), "Min: ",
+                            rangeProperty.MinValue);
                     EditorGUIUtility.labelWidth = Utils.TextWidth("Max: ");
-                    rangeProperty.MaxValue = EditorGUI.FloatField(Utils.Pad(Utils.ShareRect(miscRect, 2, 1), Padding, 0), "Max: ",
+                    rangeProperty.MaxValue = EditorGUI.FloatField(
+                        Utils.Pad(Utils.ShareRect(miscRect, 2, 1), Padding, 0), "Max: ",
                         rangeProperty.MaxValue);
                     EditorGUIUtility.labelWidth = labelWidth1;
                     rangeProperty.DefaultValue = EditorGUI.Slider(defaultRect, rangeProperty.DefaultValue,
@@ -234,9 +258,11 @@ namespace ShaderWizard {
                     EditorGUI.LabelField(labelRect, "Texture");
                     labelWidth1 = EditorGUIUtility.labelWidth;
                     EditorGUIUtility.labelWidth = Utils.TextWidth("Auto UV: ");
-                    texProperty.TexGenMode = (TexGenMode)EditorGUI.EnumPopup(miscRect, "Auto UV: ", texProperty.TexGenMode);
+                    texProperty.TexGenMode =
+                        (TexGenMode) EditorGUI.EnumPopup(miscRect, "Auto UV: ", texProperty.TexGenMode);
                     EditorGUIUtility.labelWidth = labelWidth1;
-                    texProperty.DefaultValue = (DefaultTexture)EditorGUI.EnumPopup(defaultRect, texProperty.DefaultValue);
+                    texProperty.DefaultValue =
+                        (DefaultTexture) EditorGUI.EnumPopup(defaultRect, texProperty.DefaultValue);
                     break;
 
                 // Float

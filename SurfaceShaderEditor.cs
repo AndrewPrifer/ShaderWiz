@@ -13,6 +13,10 @@ namespace ShaderWizard {
         private Vector2 _scrollPosition;
         private SurfaceShader _shader;
 
+        private void OnEnable() {
+            minSize = new Vector2(350, 100);
+        }
+
         private void OnGUI() {
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
@@ -186,7 +190,7 @@ namespace ShaderWizard {
             private get { return _shader; }
             set {
                 _shader = value;
-                title = _shader.name;
+                title = _shader.name + " - Surface";
             }
         }
     }
