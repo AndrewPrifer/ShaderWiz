@@ -118,7 +118,7 @@ namespace ShaderWizard {
             return
                 _shaderSettings.GetProperties()
                     .Cast<ShaderProperty>()
-                    .All(property => Regex.IsMatch(property.Name, @"^[_a-zA-Z][_a-zA-Z0-9]*$"));
+                    .All(property => property.Name != null && Regex.IsMatch(property.Name, @"^[_a-zA-Z][_a-zA-Z0-9]*$"));
         }
 
         #region Subshader list
@@ -154,13 +154,13 @@ namespace ShaderWizard {
             // Add to list
             _subshaderList.onAddDropdownCallback = (rect, list) => {
                 var menu = new GenericMenu();
-                menu.AddItem(new GUIContent("Surface Shader"), false, AddShaderHandler, SubshaderType.Surface);
+                menu.AddItem(new GUIContent("Surface Shader"), false, OnAddSubshader, SubshaderType.Surface);
                 menu.AddDisabledItem(new GUIContent("Custom Shader (coming soon)"));
                 menu.ShowAsContext();
             };
         }
 
-        private void AddShaderHandler(object userdata) {
+        private void OnAddSubshader(object userdata) {
             var type = (SubshaderType) userdata;
             switch (type) {
                 case SubshaderType.Surface:
@@ -209,11 +209,11 @@ namespace ShaderWizard {
             // Add to list
             _propertyList.onAddDropdownCallback = (rect, list) => {
                 var menu = new GenericMenu();
-                menu.AddItem(new GUIContent("Range"), false, AddPropertyHandler, PropertyType.Range);
-                menu.AddItem(new GUIContent("Color"), false, AddPropertyHandler, PropertyType.Color);
-                menu.AddItem(new GUIContent("Texture"), false, AddPropertyHandler, PropertyType.Texture);
-                menu.AddItem(new GUIContent("Float"), false, AddPropertyHandler, PropertyType.Float);
-                menu.AddItem(new GUIContent("Vector"), false, AddPropertyHandler, PropertyType.Vector);
+                menu.AddItem(new GUIContent("Range"), false, OnAddProperty, PropertyType.Range);
+                menu.AddItem(new GUIContent("Color"), false, OnAddProperty, PropertyType.Color);
+                menu.AddItem(new GUIContent("Texture"), false, OnAddProperty, PropertyType.Texture);
+                menu.AddItem(new GUIContent("Float"), false, OnAddProperty, PropertyType.Float);
+                menu.AddItem(new GUIContent("Vector"), false, OnAddProperty, PropertyType.Vector);
                 menu.ShowAsContext();
             };
         }
@@ -283,7 +283,7 @@ namespace ShaderWizard {
             }
         }
 
-        private void AddPropertyHandler(object userData) {
+        private void OnAddProperty(object userData) {
             var type = (PropertyType) userData;
             switch (type) {
                 case PropertyType.Range:

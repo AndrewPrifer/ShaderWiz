@@ -15,6 +15,7 @@ namespace ShaderWizard {
             }
 
             if (GUI.Button(position, shaderPopupContent, style)) {
+                // Why u not work with CreateInstance?! Why u not work with Object?!
                 var menuCommand = new MenuCommand(new ShaderEventHandler(), 0);
 
                 // Create dummy material to make it not highlight any shaders inside:
