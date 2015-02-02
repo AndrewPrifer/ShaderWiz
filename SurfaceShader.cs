@@ -7,7 +7,7 @@ namespace ShaderWizard {
             CgincTerrainEngine = false;
             CgincLighting = false;
             CgincAutoLight = false;
-            CgincUnityCg = true;
+            CgincUnityCg = false;
 
             // Misc settings
             RenderPosition = RenderPosition.Geometry;
@@ -15,14 +15,15 @@ namespace ShaderWizard {
             ForceNoShadowCasting = false;
             DisableWhenSoftVegIsOff = false;
             AlphaBlended = false;
+            CommentFinal = false;
 
             // Shadow settings
             SupportAllShadowTypes = false;
             AddShadowPasses = false;
 
             // Lightmap settings
-            DualLightmaps = false;
-            DirectionalLightmaps = true;
+            DualForward = false;
+            SupportDirectionalLightmaps = true;
             SupportLightmaps = true;
 
             // Lighting settings
@@ -38,6 +39,7 @@ namespace ShaderWizard {
             SsPositionInInput = false;
             ViewDirInInput = false;
             VertColorInInput = false;
+            UvInInput = true;
 
             // Custom function settings
             ViewDirInDirectional = false;
@@ -47,7 +49,7 @@ namespace ShaderWizard {
             UseDualLightMap = false;
             UseSingleLightMap = false;
             UsePrePass = false;
-            IncludeViewDirInLighting = false;
+            ViewDirInLighting = false;
             LightingModel = LightingModel.Lambert;
             UseBuiltinLighting = true;
             PassHalfDirInLighting = false;
@@ -66,7 +68,7 @@ namespace ShaderWizard {
         public bool PassHalfDirInLighting { get; set; }
         public bool UseBuiltinLighting { get; set; }
         public LightingModel LightingModel { get; set; }
-        public bool IncludeViewDirInLighting { get; set; }
+        public bool ViewDirInLighting { get; set; }
         public bool UsePrePass { get; set; }
         public bool UseSingleLightMap { get; set; }
         public bool UseDualLightMap { get; set; }
@@ -79,14 +81,15 @@ namespace ShaderWizard {
         public bool SsPositionInInput { get; set; }
         public bool WorldReflectionVectorInInput { get; set; }
         public bool WorldNormalInInput { get; set; }
+        public bool UvInInput { get; set; }
         public bool OutNormalSpecified { get; set; }
         public bool ApplyAmbient { get; set; }
         public bool ApplyVertexLights { get; set; }
         public bool EnableAdditivePass { get; set; }
         public bool ViewDirPerVert { get; set; }
         public bool SupportLightmaps { get; set; }
-        public bool DirectionalLightmaps { get; set; }
-        public bool DualLightmaps { get; set; }
+        public bool SupportDirectionalLightmaps { get; set; }
+        public bool DualForward { get; set; }
         public bool AddShadowPasses { get; set; }
         public bool SupportAllShadowTypes { get; set; }
         public bool AlphaBlended { get; set; }
@@ -94,6 +97,7 @@ namespace ShaderWizard {
         public bool ForceNoShadowCasting { get; set; }
         public bool IgnoreProjector { get; set; }
         public RenderPosition RenderPosition { get; set; }
+        public bool CommentFinal { get; set; }
         public bool CgincUnityCg { get; set; }
         public bool CgincAutoLight { get; set; }
         public bool CgincLighting { get; set; }

@@ -13,42 +13,80 @@ namespace ShaderWizard {
         private Vector2 _scrollPosition;
         private SurfaceShader _shader;
 
+        private void OnEnable() {
+            minSize = new Vector2(350, 100);
+        }
+
         private void OnGUI() {
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
+
+            // Custom functions group
             _showFunctionsSettings = SwGuiLayout.BeginControlGroup(_showFunctionsSettings, "Custom Functions");
             if (_showFunctionsSettings) {
-                Shader.UseVertexModifier = SwGuiLayout.BeginToggleGroup("Use vertex modifier", Shader.UseVertexModifier);
-                Shader.CustomDataPerVertex = EditorGUILayout.ToggleLeft("Calculate custom data per-vertex",
-                    Shader.CustomDataPerVertex);
+                Shader.UseVertexModifier =
+                    SwGuiLayout.BeginToggleGroup(new GUIContent("Use vertex modifier", HelpText.VertexModifier),
+                        Shader.UseVertexModifier);
+
+                Shader.CustomDataPerVertex =
+                    EditorGUILayout.ToggleLeft(
+                        new GUIContent("Calculate custom data per-vertex", HelpText.CustomDataPerVertex),
+                        Shader.CustomDataPerVertex);
+
                 SwGuiLayout.EndToggleGroup();
-                Shader.UseFinalColorModifier = EditorGUILayout.ToggleLeft("Use final color modifier",
-                    Shader.UseFinalColorModifier);
-                Shader.UseTessellation = EditorGUILayout.ToggleLeft("Use DX11 tessellation ", Shader.UseTessellation);
+                Shader.UseFinalColorModifier =
+                    EditorGUILayout.ToggleLeft(new GUIContent("Use final color modifier", HelpText.FinalColorModifier),
+                        Shader.UseFinalColorModifier);
+
+                Shader.UseTessellation =
+                    EditorGUILayout.ToggleLeft(new GUIContent("Use DX11 tessellation", HelpText.Tessellation),
+                        Shader.UseTessellation);
+
                 Shader.PassHalfDirInLighting =
-                    EditorGUILayout.ToggleLeft("Pass half-direction vector into ligthing function",
+                    EditorGUILayout.ToggleLeft(
+                        new GUIContent("Pass half-direction vector into ligthing function", HelpText.HalfDirInLighting),
                         Shader.PassHalfDirInLighting);
-                Shader.UseBuiltinLighting = SwGuiLayout.BeginToggleGroup("Use built-in lighting model",
-                    Shader.UseBuiltinLighting);
+
+                Shader.UseBuiltinLighting =
+                    SwGuiLayout.BeginToggleGroup(
+                        new GUIContent("Use built-in lighting model", HelpText.BuiltinLighting),
+                        Shader.UseBuiltinLighting);
+
                 Shader.LightingModel =
                     (LightingModel) EditorGUILayout.EnumPopup("Lighting model:", Shader.LightingModel);
                 SwGuiLayout.EndToggleGroup();
-                Shader.UseBuiltinLighting = SwGuiLayout.BeginToggleGroup("Use custom lighting model",
-                    !Shader.UseBuiltinLighting);
-                Shader.IncludeViewDirInLighting = EditorGUILayout.ToggleLeft("Include view direction parameter",
-                    Shader.IncludeViewDirInLighting);
-                Shader.UsePrePass = EditorGUILayout.ToggleLeft("Use prepass function (deferred lighting)", Shader.UsePrePass);
+
+                Shader.UseBuiltinLighting =
+                    !SwGuiLayout.BeginToggleGroup(new GUIContent("Use custom lighting model", HelpText.CustomLighting),
+                        !Shader.UseBuiltinLighting);
+
+                Shader.ViewDirInLighting = EditorGUILayout.ToggleLeft("Include view direction parameter",
+                    Shader.ViewDirInLighting);
+
+                Shader.UsePrePass = EditorGUILayout.ToggleLeft("Use prepass function (deferred lighting)",
+                    Shader.UsePrePass);
+
                 SwGuiLayout.EndToggleGroup();
+
+                // Custom lightmap decoders
                 EditorGUILayout.LabelField("Use custom lightmap decoder function:");
                 EditorGUI.indentLevel++;
-                Shader.UseSingleLightMap = SwGuiLayout.BeginToggleGroup("Single", Shader.UseSingleLightMap);
+
+                Shader.UseSingleLightMap =
+                    SwGuiLayout.BeginToggleGroup(new GUIContent("Single", HelpText.SingleLightmap),
+                        Shader.UseSingleLightMap);
                 Shader.ViewDirInSingle = EditorGUILayout.ToggleLeft("Include view direction parameter",
                     Shader.ViewDirInSingle);
                 SwGuiLayout.EndToggleGroup();
-                Shader.UseDualLightMap = SwGuiLayout.BeginToggleGroup("Dual", Shader.UseDualLightMap);
+
+                Shader.UseDualLightMap = SwGuiLayout.BeginToggleGroup(new GUIContent("Dual", HelpText.DualLightmap),
+                    Shader.UseDualLightMap);
                 Shader.ViewDirInDual = EditorGUILayout.ToggleLeft("Include view direction parameter",
                     Shader.ViewDirInDual);
                 SwGuiLayout.EndToggleGroup();
-                Shader.UseDirectionalLightMap = SwGuiLayout.BeginToggleGroup("Directional", Shader.UseDirectionalLightMap);
+
+                Shader.UseDirectionalLightMap =
+                    SwGuiLayout.BeginToggleGroup(new GUIContent("Directional", HelpText.DirectionalLightmap),
+                        Shader.UseDirectionalLightMap);
                 Shader.ViewDirInDirectional = EditorGUILayout.ToggleLeft("Include view direction parameter",
                     Shader.ViewDirInDirectional);
                 SwGuiLayout.EndToggleGroup();
@@ -56,8 +94,10 @@ namespace ShaderWizard {
             }
             SwGuiLayout.EndControlGroup();
 
-            _showInputSettings = SwGuiLayout.BeginControlGroup(_showInputSettings, "Optional Shader Input Values");
+            // Shader input
+            _showInputSettings = SwGuiLayout.BeginControlGroup(_showInputSettings, "Shader Input Values");
             if (_showInputSettings) {
+                Shader.UvInInput = EditorGUILayout.ToggleLeft("Texture coordinates", Shader.UvInInput);
                 Shader.ViewDirInInput = EditorGUILayout.ToggleLeft("View direction", Shader.ViewDirInInput);
                 Shader.VertColorInInput = EditorGUILayout.ToggleLeft("Per-vertex color", Shader.VertColorInInput);
                 Shader.SsPositionInInput = EditorGUILayout.ToggleLeft("Screen space position", Shader.SsPositionInInput);
@@ -67,34 +107,44 @@ namespace ShaderWizard {
                 Shader.WorldNormalInInput = EditorGUILayout.ToggleLeft("World normal vector", Shader.WorldNormalInInput);
                 SwGuiLayout.Separator();
                 Shader.OutNormalSpecified =
-                    EditorGUILayout.ToggleLeft("Output normal is specified (in surface function)",
+                    EditorGUILayout.ToggleLeft(
+                        new GUIContent("Surface function writes to output normal", HelpText.OutputNormalSpecified),
                         Shader.OutNormalSpecified);
             }
             SwGuiLayout.EndControlGroup();
 
+            // Lighting group
             _showLightingSettings = SwGuiLayout.BeginControlGroup(_showLightingSettings, "Lighting");
             if (_showLightingSettings) {
                 Shader.ApplyAmbient = EditorGUILayout.ToggleLeft("Apply ambient lights", Shader.ApplyAmbient);
                 Shader.ApplyVertexLights = EditorGUILayout.ToggleLeft("Apply per-vertex lights in forward rendering",
                     Shader.ApplyVertexLights);
-                Shader.EnableAdditivePass = EditorGUILayout.ToggleLeft("Enable forward rendering additive pass",
-                    Shader.EnableAdditivePass);
+                Shader.EnableAdditivePass =
+                    EditorGUILayout.ToggleLeft(
+                        new GUIContent("Enable forward rendering additive pass", HelpText.ForwardAdditive),
+                        Shader.EnableAdditivePass);
                 Shader.ViewDirPerVert = EditorGUILayout.ToggleLeft("Compute view direction per-vertex",
                     Shader.ViewDirPerVert);
             }
             SwGuiLayout.EndControlGroup();
 
+            //Lightmaps group
             _showLightmapSettings = SwGuiLayout.BeginControlGroup(_showLightmapSettings, "Lightmaps");
             if (_showLightmapSettings) {
                 Shader.SupportLightmaps = SwGuiLayout.BeginToggleGroup("Support lightmaps", Shader.SupportLightmaps);
-                Shader.DirectionalLightmaps = EditorGUILayout.ToggleLeft("Support directional lightmaps",
-                    Shader.DirectionalLightmaps);
-                Shader.DualLightmaps = EditorGUILayout.ToggleLeft("Dual lightmaps in forward rendering",
-                    Shader.DualLightmaps);
+                Shader.SupportDirectionalLightmaps =
+                    EditorGUILayout.ToggleLeft(
+                        new GUIContent("Support directional lightmaps", HelpText.DirectionalLightmap),
+                        Shader.SupportDirectionalLightmaps);
+                Shader.DualForward =
+                    EditorGUILayout.ToggleLeft(
+                        new GUIContent("Dual lightmaps in forward rendering", HelpText.DualLightmap),
+                        Shader.DualForward);
                 SwGuiLayout.EndToggleGroup();
             }
             SwGuiLayout.EndControlGroup();
 
+            // Shadows group
             _showShadowSettings = SwGuiLayout.BeginControlGroup(_showShadowSettings, "Shadows");
             if (_showShadowSettings) {
                 Shader.AddShadowPasses = EditorGUILayout.ToggleLeft("Add shadow passes", Shader.AddShadowPasses);
@@ -104,6 +154,7 @@ namespace ShaderWizard {
             }
             SwGuiLayout.EndControlGroup();
 
+            // Miscellaneous group
             _showMiscSettings = SwGuiLayout.BeginControlGroup(_showMiscSettings, "Misc Settings");
             if (_showMiscSettings) {
                 Shader.AlphaBlended = EditorGUILayout.ToggleLeft("Alpha blended", Shader.AlphaBlended);
@@ -113,17 +164,23 @@ namespace ShaderWizard {
                 Shader.ForceNoShadowCasting = EditorGUILayout.ToggleLeft("Force no shadow casting",
                     Shader.ForceNoShadowCasting);
                 Shader.IgnoreProjector = EditorGUILayout.ToggleLeft("Ignore projector", Shader.IgnoreProjector);
-                Shader.RenderPosition = (RenderPosition) EditorGUILayout.EnumPopup("Rendering order position:", Shader.RenderPosition);
+                Shader.RenderPosition =
+                    (RenderPosition) EditorGUILayout.EnumPopup("Rendering order position:", Shader.RenderPosition);
+                Shader.CommentFinal =
+                    EditorGUILayout.ToggleLeft("Put debug comments in compiled surface shader",
+                        Shader.CommentFinal);
             }
             SwGuiLayout.EndControlGroup();
 
+            // Include group
             _showIncludeSettings = SwGuiLayout.BeginControlGroup(_showIncludeSettings, "Include");
             if (_showIncludeSettings) {
-                Shader.CgincUnityCg = EditorGUILayout.ToggleLeft("UnityCG.cginc", Shader.CgincUnityCg);
-                Shader.CgincAutoLight = EditorGUILayout.ToggleLeft("AutoLight.cginc", Shader.CgincAutoLight);
-                Shader.CgincLighting = EditorGUILayout.ToggleLeft("Lighting.cginc", Shader.CgincLighting);
-                Shader.CgincTerrainEngine = EditorGUILayout.ToggleLeft("TerrainEngine.cginc", Shader.CgincTerrainEngine);
-                Shader.CgincTessellation = EditorGUILayout.ToggleLeft("Tessellation.cginc", Shader.CgincTessellation);
+                Shader.CgincTerrainEngine =
+                    EditorGUILayout.ToggleLeft(new GUIContent("TerrainEngine.cginc", HelpText.TerrainInclude),
+                        Shader.CgincTerrainEngine);
+                Shader.CgincTessellation =
+                    EditorGUILayout.ToggleLeft(new GUIContent("Tessellation.cginc", HelpText.TessellationInclude),
+                        Shader.CgincTessellation);
             }
             SwGuiLayout.EndControlGroup();
             EditorGUILayout.EndScrollView();
@@ -133,7 +190,7 @@ namespace ShaderWizard {
             private get { return _shader; }
             set {
                 _shader = value;
-                title = _shader.name;
+                title = _shader.name + " - Surface";
             }
         }
     }

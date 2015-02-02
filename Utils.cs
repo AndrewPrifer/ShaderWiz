@@ -21,7 +21,17 @@ namespace ShaderWizard {
         }
 
         public static Rect DivideRect(Rect parent, int index, float divideAt) {
-            return  new Rect(parent.x + parent.width * divideAt * index,parent.y, parent.width * Math.Abs(index - divideAt), parent.height);
+            return new Rect(parent.x + parent.width * divideAt * index,parent.y, parent.width * Math.Abs(index - divideAt), parent.height);
+        }
+
+        public static Rect Pad(Rect rect, float left, float right) {
+            rect.xMin += left;
+            rect.xMax -= right;
+            return rect;
+        }
+
+        public static float TextWidth(string text) {
+            return GUI.skin.label.CalcSize(new GUIContent(text)).x;
         }
     }
 }

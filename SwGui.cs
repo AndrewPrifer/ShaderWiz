@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace ShaderWizard {
@@ -14,11 +13,15 @@ namespace ShaderWizard {
             if (label != null) {
                 position = EditorGUI.PrefixLabel(position, label);
             }
+
             if (GUI.Button(position, shaderPopupContent, style)) {
+                // Why u not work with CreateInstance?! Why u not work with Object?!
                 var menuCommand = new MenuCommand(new ShaderEventHandler(), 0);
+
                 // Create dummy material to make it not highlight any shaders inside:
-                var tmpStr = "Shader \"Hidden/tmp_shdr\"{SubShader{Pass{}}}";
+                const string tmpStr = "Shader \"Hidden/tmp_shdr\"{SubShader{Pass{}}}";
                 var temp = new Material(tmpStr);
+
                 // Rebuild shader menu:
                 UnityEditorInternal.InternalEditorUtility.SetupShaderMenu(temp);
 
@@ -29,10 +32,12 @@ namespace ShaderWizard {
                 // Display shader popup:
                 EditorUtility.DisplayPopupMenu(position, "CONTEXT/ShaderPopup", menuCommand);
             }
+
             if (_selectedShader != null) {
                 selected = _selectedShader;
                 _selectedShader = null;
             }
+
             return selected;
         }
 
@@ -78,12 +83,14 @@ namespace ShaderWizard {
             EditorGUI.MultiFloatField(position,
                 new[] {new GUIContent("X"), new GUIContent("Y"), new GUIContent("Z"), new GUIContent("W")}, floats);
             --EditorGUI.indentLevel;
+
             if (EditorGUI.EndChangeCheck()) {
                 value.x = floats[0];
                 value.y = floats[1];
                 value.z = floats[2];
                 value.w = floats[3];
             }
+
             return value;
         }
     }

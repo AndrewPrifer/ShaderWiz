@@ -1,9 +1,9 @@
 ﻿namespace ShaderWizard {
     internal enum DefaultTexture {
-        empty,
-        white,
-        gray,
-        black,
-        bump
+        Empty,
+        White,
+        Gray,
+        Black,
+        Bump
     }
 }
