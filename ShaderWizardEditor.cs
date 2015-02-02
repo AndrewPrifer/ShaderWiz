@@ -188,7 +188,7 @@ namespace ShaderWizard {
                 var nameRect = Utils.Anchor(rect, labelWidth, defaultWidth + miscWidth);
                 EditorGUI.LabelField(Utils.ShareRect(nameRect, 2, 0), "Name");
                 EditorGUI.LabelField(Utils.ShareRect(nameRect, 2, 1), "Display Name");
-                EditorGUI.LabelField(Utils.AnchorRight(rect, miscWidth, defaultWidth), "Default");
+                EditorGUI.LabelField(Utils.AnchorRight(rect, miscWidth, defaultWidth), "Default Value");
                 EditorGUI.LabelField(Utils.AnchorRight(rect, 0, miscWidth), "Miscellaneous");
             };
 
