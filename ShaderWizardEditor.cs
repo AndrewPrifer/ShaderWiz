@@ -20,6 +20,7 @@ namespace ShaderWizard {
         private bool _showSubshaders;
         private ReorderableList _subshaderList;
         private const float Padding = 2f;
+        public const string ResPath = "Assets/Shader Wizard/InternalResources/";
 
         #endregion
 
@@ -31,7 +32,7 @@ namespace ShaderWizard {
             _showCommentSettings = true;
         }
 
-        [MenuItem("Tools/Shader Wizard")]
+        [MenuItem("Tools/ShaderWiz/Shader Wizard", false, 1)]
         private static void ShowWindow() {
             GetWindow(typeof (ShaderWizardEditor), false, "Shader Wizard");
         }
