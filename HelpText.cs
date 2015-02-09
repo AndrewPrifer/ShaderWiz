@@ -1,4 +1,4 @@
-﻿namespace ShaderWizard {
+﻿namespace ShaderWiz {
     internal static class HelpText {
         public const string ShaderName = "Your shader will appear in the material inspector listed under Name.";
 

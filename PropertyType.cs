@@ -1,4 +1,4 @@
-namespace ShaderWizard {
+namespace ShaderWiz {
     internal enum PropertyType {
         Range,
         Color,

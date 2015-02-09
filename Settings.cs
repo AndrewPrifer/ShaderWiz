@@ -1,4 +1,4 @@
-﻿namespace ShaderWizard {
+﻿namespace ShaderWiz {
     internal static class Settings {
  
     }

@@ -1,7 +1,8 @@
 ﻿using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
-namespace ShaderWizard {
+namespace ShaderWiz {
     internal static class SwGui {
 
         #region Shader popup
@@ -23,7 +24,7 @@ namespace ShaderWizard {
                 var temp = new Material(tmpStr);
 
                 // Rebuild shader menu:
-                UnityEditorInternal.InternalEditorUtility.SetupShaderMenu(temp);
+                InternalEditorUtility.SetupShaderMenu(temp);
 
                 // Destroy temporary shader and material:
                 Object.DestroyImmediate(temp.shader, true);

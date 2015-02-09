@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ShaderWizard {
+namespace ShaderWiz {
     internal class VectorProperty : ShaderProperty {
         public VectorProperty() {
             DefaultValue = new Vector4(0, 0, 0, 0);

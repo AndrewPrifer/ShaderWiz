@@ -1,4 +1,4 @@
-﻿namespace ShaderWizard {
+﻿namespace ShaderWiz {
     internal enum DefaultTexture {
         Empty,
         White,

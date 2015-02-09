@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ShaderWizard {
+namespace ShaderWiz {
     internal abstract class ShaderProperty : ScriptableObject {
 
         private void OnEnable() {

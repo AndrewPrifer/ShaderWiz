@@ -1,4 +1,4 @@
-﻿namespace ShaderWizard {
+﻿namespace ShaderWiz {
     internal class RangeProperty : ShaderProperty {
         public RangeProperty() {
             MinValue = -10;

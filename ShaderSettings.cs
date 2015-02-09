@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 
-namespace ShaderWizard {
+namespace ShaderWiz {
     internal class ShaderSettings : ScriptableObject {
         #region  Fields
 

@@ -1,4 +1,4 @@
-﻿namespace ShaderWizard {
+﻿namespace ShaderWiz {
     internal class FloatProperty : ShaderProperty {
 
         public FloatProperty() {

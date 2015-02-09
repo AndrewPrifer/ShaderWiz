@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace ShaderWizard {
+namespace ShaderWiz {
     internal static class SwGuiLayout {
 
         #region Shader popup
