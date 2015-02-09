@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -7,7 +6,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace ShaderWizard {
+namespace ShaderWiz {
     internal class ShaderWizardEditor : EditorWindow {
         #region  Fields
 

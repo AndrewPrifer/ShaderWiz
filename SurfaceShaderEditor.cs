@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace ShaderWizard {
+namespace ShaderWiz {
     internal class SurfaceShaderEditor : EditorWindow {
         private bool _showFunctionsSettings = true;
         private bool _showInputSettings = true;

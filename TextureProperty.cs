@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ShaderWizard {
+namespace ShaderWiz {
     internal class TextureProperty : ShaderProperty {
         public TextureProperty() {
             TextureType = TextureType.TwoD;

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace ShaderWizard {
+namespace ShaderWiz {
     internal static class Utils {
 
         public static Rect AnchorLeft(Rect parent, float offset, float width) {

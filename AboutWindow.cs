@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace ShaderWizard {
+namespace ShaderWiz {
     internal class AboutWindow : EditorWindow {
 
         [MenuItem("Tools/ShaderWiz/About", false, 2)]

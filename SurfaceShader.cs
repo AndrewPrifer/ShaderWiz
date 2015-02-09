@@ -1,4 +1,4 @@
-namespace ShaderWizard {
+namespace ShaderWiz {
     internal class SurfaceShader : Subshader {
 
         public SurfaceShader() {

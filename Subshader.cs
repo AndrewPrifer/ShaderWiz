@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ShaderWizard {
+namespace ShaderWiz {
     internal abstract class Subshader : ScriptableObject {
         private void OnEnable() {
             hideFlags = HideFlags.HideAndDontSave;
