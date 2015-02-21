@@ -1,5 +1,4 @@
 ﻿using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
 
 namespace ShaderWiz {
@@ -24,7 +23,7 @@ namespace ShaderWiz {
                 var temp = new Material(tmpStr);
 
                 // Rebuild shader menu:
-                InternalEditorUtility.SetupShaderMenu(temp);
+                UnityEditorInternal.InternalEditorUtility.SetupShaderMenu(temp);
 
                 // Destroy temporary shader and material:
                 Object.DestroyImmediate(temp.shader, true);
