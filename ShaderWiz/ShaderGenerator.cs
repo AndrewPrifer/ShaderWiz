@@ -34,7 +34,7 @@ namespace ShaderWiz {
                             var tex = (TextureProperty) property;
                             writer.WriteLine("{0} (\"{1}\", {2}) = \"{3}\" {{{4}}}", tex.Name, tex.DisplayName,
                                 tex.TextureType.ToString().Replace("Two", "2"), tex.DefaultValue.ToString().ToLower(),
-                                tex.TexGenMode == TexGenMode.None ? "" : "TexGen " + tex.TexGenMode.ToString());
+                                tex.TexGenMode == TexGenMode.None ? "" : "TexGen " + tex.TexGenMode);
                             break;
                         case PropertyType.Float:
                             var num = (FloatProperty) property;
