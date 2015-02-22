@@ -1,9 +1,39 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace ShaderWiz {
     internal class VertFragPass : Pass {
+        public VertFragPass() {
+            WriteToDepthBuffer = true;
+            ZTestFunc = CompareFunction.LessEqual;
+            UseDepthOffset = false;
+            DepthFactor = 0;
+            DepthUnit = 0;
+            AlphaTestFunc = CompareFunction.Always;
+            UseAlphaTest = false;
+            AlphaTestValue = 0;
+            ApplyBlending = false;
+            SourceBlendFactor = BlendMode.SrcAlpha;
+            DestBlendFactor = BlendMode.OneMinusSrcAlpha;
+            BlendAlphaSeparately = false;
+            AlphaSourceBlendFactor = BlendMode.One;
+            AlphaDestBlendFactor = BlendMode.One;
+            BlendOp = BlendOp.Add;
+            UseGeometryShader = false;
+            UseHullShader = false;
+            UseDomainShader = false;
+            CompileToGlsl = false;
+            AutoNormalizeVectors = true;
+            GenerateDebugInfo = false;
+            ShaderTarget = ShaderTarget.ShaderModel2;
+            ExcludedRenderers = new List<Renderer>();
+            LightMode = LightMode.Always;
+            RequireOptions = new List<RenderOption>();
+            FaceCullMode = CullMode.Back;
+            ApplyFog = true;
+            AllowExternalReference = false;
+        }
+
         public bool WriteToDepthBuffer { get; set; }
         public CompareFunction ZTestFunc { get; set; }
         public bool UseDepthOffset { get; set; }
@@ -26,7 +56,7 @@ namespace ShaderWiz {
         public bool AutoNormalizeVectors { get; set; }
         public bool GenerateDebugInfo { get; set; }
         public ShaderTarget ShaderTarget { get; set; }
-        public Renderer ExcludeRenderer { get; set; }
+        public List<Renderer> ExcludedRenderers { get; set; }
         public LightMode LightMode { get; set; }
         public List<RenderOption> RequireOptions { get; set; }
         public CullMode FaceCullMode { get; set; }
