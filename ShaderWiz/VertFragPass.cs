@@ -28,10 +28,16 @@ namespace ShaderWiz {
             ShaderTarget = ShaderTarget.ShaderModel2;
             ExcludedRenderers = new List<Renderer>();
             LightMode = LightMode.Always;
-            RequireOptions = new List<RenderOption>();
+            RequireSoftVegatation = false;
             FaceCullMode = CullMode.Back;
             ApplyFog = true;
             AllowExternalReference = false;
+
+            CgincAutoLight = false;
+            CgincLighting = false;
+            CgincTerrainEngine = false;
+            CgincTessellation = false;
+            CgincUnityCg = true;
         }
 
         public bool WriteToDepthBuffer { get; set; }
@@ -58,9 +64,18 @@ namespace ShaderWiz {
         public ShaderTarget ShaderTarget { get; set; }
         public List<Renderer> ExcludedRenderers { get; set; }
         public LightMode LightMode { get; set; }
-        public List<RenderOption> RequireOptions { get; set; }
+        public bool RequireSoftVegatation { get; set; }
         public CullMode FaceCullMode { get; set; }
         public bool ApplyFog { get; set; }
         public bool AllowExternalReference { get; set; }
+        public bool CgincUnityCg { get; set; }
+        public bool CgincAutoLight { get; set; }
+        public bool CgincLighting { get; set; }
+        public bool CgincTerrainEngine { get; set; }
+        public bool CgincTessellation { get; set; }
+
+        public override PassType PassType {
+            get { return PassType.VertFrag; }
+        }
     }
 }

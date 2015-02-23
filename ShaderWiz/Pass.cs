@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 
 namespace ShaderWiz {
-    internal class Pass : ScriptableObject {
+    internal abstract class Pass : ScriptableObject {
         private void OnEnable() {
             hideFlags = HideFlags.HideAndDontSave;
         }
+
+        public abstract PassType PassType { get; }
     }
 }

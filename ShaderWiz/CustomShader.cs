@@ -2,19 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using UnityEngine;
 
 namespace ShaderWiz {
     internal class CustomShader : Subshader {
         private List<Pass> _passes;
 
-        private void Init() {
+        public CustomShader() {
             _passes = new List<Pass>();
-        }
-
-        private void OnEnable() {
-            if (_passes == null) {
-                Init();
-            }
         }
 
         public Pass GetPass(int index) {

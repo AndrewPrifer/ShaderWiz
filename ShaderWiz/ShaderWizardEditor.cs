@@ -147,8 +147,18 @@ namespace ShaderWiz {
                     element.name);
 
                 if (GUI.Button(Utils.Pad(Utils.AnchorRight(rect, 0, buttonWidth), Padding, 0), "Edit subshader settings")) {
-                    var window = (SurfaceShaderEditor) GetWindow(typeof (SurfaceShaderEditor));
-                    window.Shader = (SurfaceShader) element;
+                    switch (element.SubshaderType) {
+                        case SubshaderType.Surface:
+                            var surfaceWindow = (SurfaceShaderEditor) GetWindow(typeof (SurfaceShaderEditor));
+                            surfaceWindow.Shader = (SurfaceShader)element;
+                            break;
+                        case SubshaderType.Custom:
+                            var customWindow = (CustomShaderEditor)GetWindow(typeof(CustomShaderEditor));
+                            customWindow.Shader = (CustomShader)element;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
             };
 
@@ -156,7 +166,7 @@ namespace ShaderWiz {
             _subshaderList.onAddDropdownCallback = (rect, list) => {
                 var menu = new GenericMenu();
                 menu.AddItem(new GUIContent("Surface Shader"), false, OnAddSubshader, SubshaderType.Surface);
-                menu.AddDisabledItem(new GUIContent("Custom Shader (coming soon)"));
+                menu.AddItem(new GUIContent("Custom Shader"), false, OnAddSubshader, SubshaderType.Custom);
                 menu.ShowAsContext();
             };
         }
@@ -168,7 +178,7 @@ namespace ShaderWiz {
                     _subshaderList.list.Add(CreateInstance<SurfaceShader>());
                     break;
                 case SubshaderType.Custom:
-                    // todo custom subshader
+                    _subshaderList.list.Add(CreateInstance<CustomShader>());
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

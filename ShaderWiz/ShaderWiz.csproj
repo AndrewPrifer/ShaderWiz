@@ -47,18 +47,26 @@
   <ItemGroup>
     <Compile Include="AboutWindow.cs" />
     <Compile Include="ColorProperty.cs" />
+    <Compile Include="CustomShader.cs" />
+    <Compile Include="CustomShaderEditor.cs" />
     <Compile Include="DefaultTexture.cs" />
     <Compile Include="FloatProperty.cs" />
     <Compile Include="HelpText.cs" />
     <Compile Include="LightingModel.cs" />
+    <Compile Include="LightMode.cs" />
+    <Compile Include="Pass.cs" />
+    <Compile Include="PassType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyType.cs" />
     <Compile Include="RangeProperty.cs" />
+    <Compile Include="Renderer.cs" />
+    <Compile Include="RenderOption.cs" />
     <Compile Include="RenderPosition.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ShaderGenerator.cs" />
     <Compile Include="ShaderProperty.cs" />
     <Compile Include="ShaderSettings.cs" />
+    <Compile Include="ShaderTarget.cs" />
     <Compile Include="ShaderWizardEditor.cs" />
     <Compile Include="Subshader.cs" />
     <Compile Include="SubshaderType.cs" />
@@ -70,6 +78,8 @@
     <Compile Include="TextureType.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="VectorProperty.cs" />
+    <Compile Include="VertFragEditor.cs" />
+    <Compile Include="VertFragPass.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
