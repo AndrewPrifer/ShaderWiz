@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="AboutWindow.cs" />
     <Compile Include="ColorProperty.cs" />
+    <Compile Include="CompareFunction.cs" />
     <Compile Include="CustomShader.cs" />
     <Compile Include="CustomShaderEditor.cs" />
     <Compile Include="DefaultTexture.cs" />

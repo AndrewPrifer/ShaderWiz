@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace ShaderWiz {
     internal static class ShaderGenerator {
@@ -61,21 +62,21 @@ namespace ShaderWiz {
                 writer.WriteLine("Subshader {");
                 writer.Indent++;
 
+                // Tags
+                if (subshader.RenderPosition != RenderPosition.Geometry || subshader.ForceNoShadowCasting ||
+                    subshader.IgnoreProjector) {
+                    writer.Write("Tags { ");
+                    if (subshader.RenderPosition != RenderPosition.Geometry)
+                        writer.Write("\"Queue\" = \"{0}\" ", subshader.RenderPosition);
+                    if (subshader.ForceNoShadowCasting) writer.Write("\"ForceNoShadowCasting\" = \"True\" ");
+                    if (subshader.IgnoreProjector) writer.Write("\"IgnoreProjector\" = \"True\" ");
+                    writer.WriteLine("}");
+                    writer.WriteLine();
+                }
+
                 // Surface shader
                 if (subshader.SubshaderType == SubshaderType.Surface) {
                     var surface = (SurfaceShader) subshader;
-
-                    // Tags
-                    if (surface.RenderPosition != RenderPosition.Geometry || surface.ForceNoShadowCasting ||
-                        surface.IgnoreProjector) {
-                        writer.Write("Tags { ");
-                        if (surface.RenderPosition != RenderPosition.Geometry)
-                            writer.Write("\"Queue\" = \"{0}\" ", surface.RenderPosition);
-                        if (surface.ForceNoShadowCasting) writer.Write("\"ForceNoShadowCasting\" = \"True\" ");
-                        if (surface.IgnoreProjector) writer.Write("\"IgnoreProjector\" = \"True\" ");
-                        writer.WriteLine("}");
-                        writer.WriteLine();
-                    }
 
                     // HLSL begin
                     writer.WriteLine("CGPROGRAM");
@@ -278,7 +279,83 @@ namespace ShaderWiz {
                     writer.WriteLine("}");
                     writer.WriteLine("ENDCG");
                 } else {
-                    // TODO Custom shader
+                    var custom = (CustomShader)subshader;
+
+                    foreach (Pass pass in custom.GetPasses()) {
+                        if (pass.PassType == PassType.VertFrag) {
+                            var vfPass = (VertFragPass) pass;
+
+                            writer.WriteLine("Pass {");
+                            writer.Indent++;
+
+                            // Name
+                            if (vfPass.AllowExternalReference) {
+                                writer.WriteLine("Name \"{0}\"", vfPass.name);
+                            }
+
+                            // Tags
+                            if (vfPass.LightMode != LightMode.Always || vfPass.RequireSoftVegatation) {
+                                writer.Write("Tags { ");
+                                if (vfPass.LightMode != LightMode.Always) {
+                                    writer.Write("\"LightMode\" = \"{0}\" ", vfPass.LightMode);
+                                }
+                                if (vfPass.RequireSoftVegatation) {
+                                    writer.Write("\"RequireOptions\" = \"SoftVegetation\" ");
+                                    writer.WriteLine("}");
+                                }
+                            }
+
+                            // Cull
+                            if (vfPass.FaceCullMode != CullMode.Back) {
+                                writer.WriteLine("Cull {0}", vfPass.FaceCullMode);
+                            }
+
+                            // ZTest
+                            if (vfPass.ZTestFunc != CompareFunction.LessEqual) {
+                                writer.WriteLine("ZTest {0}", vfPass.ZTestFunc);
+                            }
+
+                            // ZWrite
+                            if (!vfPass.WriteToDepthBuffer) {
+                                writer.WriteLine("ZWrite Off");
+                            }
+
+                            // Fog
+                            if (!vfPass.ApplyFog) {
+                                writer.WriteLine("Fog { Mode Off }");
+                            }
+
+                            // AlphaTest
+                            if (vfPass.UseAlphaTest) {
+                                writer.WriteLine("AlphaTest {0} {1}", vfPass.AlphaTestFunc, vfPass.AlphaTestValue);
+                            }
+
+                            // Blend
+                            if (vfPass.ApplyBlending) {
+                                writer.Write("Blend {0} {1}", vfPass.SourceBlendFactor, vfPass.DestBlendFactor);
+                                if (vfPass.BlendAlphaSeparately) {
+                                    writer.WriteLine(", {0} {1}", vfPass.AlphaSourceBlendFactor, vfPass.AlphaDestBlendFactor);
+                                } else {
+                                    writer.WriteLine();
+                                }
+                            }
+
+                            // BlendOp
+                            if (vfPass.BlendOp != BlendOp.Add) {
+                               writer.WriteLine("BlendOp {0}", vfPass.BlendOp);
+                            }
+
+                            // Offset
+                            if (vfPass.UseDepthOffset) {
+                                writer.WriteLine("Offset {0} {1}", vfPass.DepthFactor, vfPass.DepthUnit);
+                            }
+
+                            writer.Indent--;
+                            writer.WriteLine("}");
+                        } else {
+                            // TODO fixed function pass
+                        }
+                    }
                 }
                 writer.Indent--;
                 writer.WriteLine("}");

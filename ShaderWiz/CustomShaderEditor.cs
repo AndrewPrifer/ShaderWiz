@@ -5,12 +5,21 @@ using UnityEngine;
 
 namespace ShaderWiz {
     internal class CustomShaderEditor : EditorWindow {
+        const float typeWidth = 110f;
+        const float buttonWidth = 150f;
+
         private Vector2 _scrollPosition;
         private bool _showPassSettings = true;
         private bool _showSubshaderSettings = true;
         private CustomShader _shader;
         private ReorderableList _passList;
         private const float Padding = 2f;
+
+        private void OnEnable() {
+            if (Shader != null) {
+                InitPassList(typeWidth, buttonWidth);
+            }
+        }
 
         private void InitPassList(float typeWidth, float buttonWidth) {
             _passList = new ReorderableList(Shader.GetPasses(), typeof(Pass));
@@ -99,9 +108,6 @@ namespace ShaderWiz {
             set {
                 _shader = value;
                 title = _shader.name + " - Custom";
-
-                const float typeWidth = 110f;
-                const float buttonWidth = 150f;
 
                 InitPassList(typeWidth, buttonWidth);
             }
