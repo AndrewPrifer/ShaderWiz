@@ -350,6 +350,45 @@ namespace ShaderWiz {
                                 writer.WriteLine("Offset {0} {1}", vfPass.DepthFactor, vfPass.DepthUnit);
                             }
 
+                            writer.WriteLine("CGPROGRAM");
+                            
+                            writer.WriteLine("#pragma vertex vertex");
+                            writer.WriteLine("#pragma fragment fragment");
+
+                            if (vfPass.UseGeometryShader) writer.WriteLine("#pragma geometry geometry");
+                            if (vfPass.UseHullShader) writer.WriteLine("#pragma hull hull");
+                            if (vfPass.UseDomainShader) writer.WriteLine("#pragma domain domain");
+
+                            switch (vfPass.ShaderTarget) {
+                                case ShaderTarget.ShaderModel2:
+                                    writer.WriteLine("#pragma target 2.0");
+                                    break;
+                                case ShaderTarget.ShaderModel3:
+                                    writer.WriteLine("#pragma target 3.0");
+                                    break;
+                                case ShaderTarget.ShaderModel4:
+                                    writer.WriteLine("#pragma target 4.0");
+                                    break;
+                                case ShaderTarget.ShaderModel5:
+                                    writer.WriteLine("#pragma target 5.0");
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
+
+                            if (vfPass.CompileToGlsl) writer.WriteLine("#pragma glsl");
+                            if (!vfPass.AutoNormalizeVectors) writer.WriteLine("#pragma glsl_no_auto_normalization");
+                            if (vfPass.GenerateDebugInfo) writer.WriteLine("#pragma enable_d3d11_debug_symbols");
+                            writer.WriteLine();
+
+                            if (vfPass.CgincUnityCg) writer.WriteLine("#include \"UnityCG.cginc\"");
+                            if (vfPass.CgincTerrainEngine) writer.WriteLine("#include \"TerrainEngine.cginc\"");
+                            if (vfPass.CgincTessellation) writer.WriteLine("#include \"Tessellation.cginc\"");
+                            if (vfPass.CgincAutoLight) writer.WriteLine("#include \"AutoLight.cginc\"");
+                            if (vfPass.CgincLighting) writer.WriteLine("#include \"Lighting.cginc\"");
+
+                            writer.WriteLine("ENDCG");
+
                             writer.Indent--;
                             writer.WriteLine("}");
                         } else {
