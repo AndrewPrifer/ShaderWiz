@@ -13,6 +13,10 @@ namespace ShaderWiz {
         private Vector2 _scrollPosition;
         private bool _showIncludeSettings = true;
 
+        private void OnEnable() {
+            minSize = new Vector2(350, 100);
+        }
+
         private void OnGUI() {
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 

@@ -16,6 +16,8 @@ namespace ShaderWiz {
         private const float Padding = 2f;
 
         private void OnEnable() {
+            minSize = new Vector2(typeWidth + buttonWidth + 230, 100);
+
             if (Shader != null) {
                 InitPassList(typeWidth, buttonWidth);
             }
