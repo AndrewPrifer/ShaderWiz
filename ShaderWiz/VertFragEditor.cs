@@ -8,7 +8,7 @@ namespace ShaderWiz {
         private bool _showDepthTestSettings = true;
         private bool _showAlphaTestSettings = true;
         private bool _showBlendingSettings = true;
-        private bool _showVertexAttributes;
+        private bool _showVertexAttributes = true;
         private bool _showShaderSettings = true;
         private bool _showMiscSettings = true;
         private bool _showIncludeSettings = true;
@@ -39,7 +39,7 @@ namespace ShaderWiz {
             if (_showAlphaTestSettings) {
                 Pass.UseAlphaTest = SwGuiLayout.BeginToggleGroup("Use alpha test", Pass.UseAlphaTest);
                 Pass.AlphaTestFunc = (CompareFunction) EditorGUILayout.EnumPopup("Test function:", Pass.AlphaTestFunc);
-                Pass.AlphaTestValue = EditorGUILayout.FloatField("Test against:", Pass.AlphaTestValue);
+                Pass.AlphaTestValue = Mathf.Clamp01(EditorGUILayout.FloatField("Test against:", Pass.AlphaTestValue));
                 SwGuiLayout.EndToggleGroup();
             }
             SwGuiLayout.EndControlGroup();
@@ -85,9 +85,12 @@ namespace ShaderWiz {
             // Shader Options
             _showShaderSettings = SwGuiLayout.BeginControlGroup(_showShaderSettings, "Shader Options");
             if (_showShaderSettings) {
-                Pass.UseGeometryShader = EditorGUILayout.ToggleLeft("Use geometry shader", Pass.UseGeometryShader);
-                Pass.UseHullShader = EditorGUILayout.ToggleLeft("Use hull shader", Pass.UseHullShader);
-                Pass.UseDomainShader = EditorGUILayout.ToggleLeft("Use domain shader", Pass.UseDomainShader);
+                Pass.UseGeometryShader = SwGuiLayout.BeginToggleGroup("Use geometry shader", Pass.UseGeometryShader);
+                Pass.InputTopology = (InputTopology) EditorGUILayout.EnumPopup("Input topology:", Pass.InputTopology);
+                Pass.OutputTopology = (OutputTopology) EditorGUILayout.EnumPopup("Output topology:", Pass.OutputTopology);
+                Pass.MaxVertCount = Mathf.Max(EditorGUILayout.IntField("Max vertex count:", Pass.MaxVertCount), 0);
+                SwGuiLayout.EndToggleGroup();
+
                 Pass.CompileToGlsl = EditorGUILayout.ToggleLeft("Compile to GLSL for desktop", Pass.CompileToGlsl);
                 Pass.AutoNormalizeVectors = EditorGUILayout.ToggleLeft("Auto-normalize normal/tangent vectors",
                     Pass.AutoNormalizeVectors);

@@ -95,7 +95,7 @@ namespace ShaderWiz {
             SwGuiLayout.EndControlGroup();
 
             if (GUILayout.Button("Generate", "LargeButton")) {
-                //Debug.Log(ShaderGenerator.Generate(_shaderSettings, "    "));
+//                Debug.Log(ShaderGenerator.Generate(_shaderSettings, "    "));
                 if (!IsCorrect()) {
                     EditorUtility.DisplayDialog("Error", "Invalid property name.", "Ok");
                 } else {

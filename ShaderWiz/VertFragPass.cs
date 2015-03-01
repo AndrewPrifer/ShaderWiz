@@ -20,8 +20,9 @@ namespace ShaderWiz {
             AlphaDestBlendFactor = BlendMode.One;
             BlendOp = BlendOp.Add;
             UseGeometryShader = false;
-            UseHullShader = false;
-            UseDomainShader = false;
+            InputTopology = InputTopology.Point;
+            OutputTopology = OutputTopology.TriangleStream;
+            MaxVertCount = 0;
             CompileToGlsl = false;
             AutoNormalizeVectors = true;
             GenerateDebugInfo = false;
@@ -64,8 +65,9 @@ namespace ShaderWiz {
         public BlendMode AlphaDestBlendFactor { get; set; }
         public BlendOp BlendOp { get; set; }
         public bool UseGeometryShader { get; set; }
-        public bool UseHullShader { get; set; }
-        public bool UseDomainShader { get; set; }
+        public InputTopology InputTopology { get; set; }
+        public OutputTopology OutputTopology { get; set; }
+        public int MaxVertCount { get; set; }
         public bool CompileToGlsl { get; set; }
         public bool AutoNormalizeVectors { get; set; }
         public bool GenerateDebugInfo { get; set; }

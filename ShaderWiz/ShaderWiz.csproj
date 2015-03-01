@@ -53,8 +53,10 @@
     <Compile Include="DefaultTexture.cs" />
     <Compile Include="FloatProperty.cs" />
     <Compile Include="HelpText.cs" />
+    <Compile Include="InputTopology.cs" />
     <Compile Include="LightingModel.cs" />
     <Compile Include="LightMode.cs" />
+    <Compile Include="OutputTopology.cs" />
     <Compile Include="Pass.cs" />
     <Compile Include="PassType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

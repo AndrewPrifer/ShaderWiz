@@ -351,13 +351,12 @@ namespace ShaderWiz {
                             }
 
                             writer.WriteLine("CGPROGRAM");
+                            writer.WriteLine();
 
                             writer.WriteLine("#pragma vertex {0}", "vertex");
                             writer.WriteLine("#pragma fragment {0}", "fragment");
 
                             if (vfPass.UseGeometryShader) writer.WriteLine("#pragma geometry {0}", "geometry");
-                            if (vfPass.UseHullShader) writer.WriteLine("#pragma hull {0}", "hull");
-                            if (vfPass.UseDomainShader) writer.WriteLine("#pragma domain {0}", "domain");
 
                             switch (vfPass.ShaderTarget) {
                                 case ShaderTarget.ShaderModel2:
@@ -407,6 +406,69 @@ namespace ShaderWiz {
                                 writer.WriteLine();
                             }
 
+                            // Vert out
+                            writer.WriteLine("struct {0} {{", vfPass.UseGeometryShader ? "v2g" : "v2f");
+                            writer.Indent++;
+                            writer.WriteLine();
+                            writer.Indent--;
+                            writer.WriteLine("}");
+                            writer.WriteLine();
+
+                            // Frag in
+                            if (vfPass.UseGeometryShader) {
+                                writer.WriteLine("struct {0} {{", "g2f");
+                                writer.Indent++;
+                                writer.WriteLine();
+                                writer.Indent--;
+                                writer.WriteLine("}");
+                                writer.WriteLine();
+                            }
+
+                            // Vertex shader
+                            var vertInput = "";
+                            if (vfPass.UsePresetInput) {
+                                switch (vfPass.InputPreset) {
+                                    case VertexInputPreset.AppdataBase:
+                                        vertInput = "appdata_base";
+                                        break;
+                                    case VertexInputPreset.AppdataTan:
+                                        vertInput = "appdata_tan";
+                                        break;
+                                    case VertexInputPreset.AppdataFull:
+                                        vertInput = "appdata_full";
+                                        break;
+                                    default:
+                                        throw new ArgumentOutOfRangeException();
+                                }
+                            } else {
+                                vertInput = "appdata";
+                            }
+                            writer.WriteLine("{0} {1} ({2} v) {{", vfPass.UseGeometryShader ? "v2g" : "v2f", "vert", vertInput);
+                            writer.Indent++;
+                            writer.WriteLine();
+                            writer.Indent--;
+                            writer.WriteLine("}");
+                            writer.WriteLine();
+                            
+                            // Geometry shader
+                            if (vfPass.UseGeometryShader) {
+                                writer.WriteLine("[maxvertexcount({0})]", vfPass.MaxVertCount);
+                                writer.WriteLine("void {0} ({1} {2} input[{3}], inout {4}<{5}> output) {{", "geometry", vfPass.InputTopology.ToString().ToLower(), "v2g", (int) vfPass.InputTopology, vfPass.OutputTopology, "g2f");
+                                writer.Indent++;
+                                writer.WriteLine();
+                                writer.Indent--;
+                                writer.WriteLine("}");
+                                writer.WriteLine();
+                            }
+
+                            // Fragment shader
+                            writer.WriteLine("half4 {0} ({1} i) : COLOR {{", "frag", vfPass.UseGeometryShader ? "g2f" : "v2f");
+                            writer.Indent++;
+                            writer.WriteLine();
+                            writer.Indent--;
+                            writer.WriteLine("}");
+                            writer.WriteLine();
+                            
                             writer.WriteLine("ENDCG");
 
                             writer.Indent--;
