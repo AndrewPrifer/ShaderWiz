@@ -402,7 +402,7 @@ namespace ShaderWiz {
                                 if (vfPass.UseColor) writer.WriteLine("float4 color : COLOR;");
 
                                 writer.Indent--;
-                                writer.WriteLine("}");
+                                writer.WriteLine("};");
                                 writer.WriteLine();
                             }
 
@@ -411,7 +411,7 @@ namespace ShaderWiz {
                             writer.Indent++;
                             writer.WriteLine();
                             writer.Indent--;
-                            writer.WriteLine("}");
+                            writer.WriteLine("};");
                             writer.WriteLine();
 
                             // Frag in
@@ -420,7 +420,7 @@ namespace ShaderWiz {
                                 writer.Indent++;
                                 writer.WriteLine();
                                 writer.Indent--;
-                                writer.WriteLine("}");
+                                writer.WriteLine("};");
                                 writer.WriteLine();
                             }
 
@@ -443,7 +443,7 @@ namespace ShaderWiz {
                             } else {
                                 vertInput = "appdata";
                             }
-                            writer.WriteLine("{0} {1} ({2} v) {{", vfPass.UseGeometryShader ? "v2g" : "v2f", "vert", vertInput);
+                            writer.WriteLine("{0} {1} ({2} v) {{", vfPass.UseGeometryShader ? "v2g" : "v2f", "vertex", vertInput);
                             writer.Indent++;
                             writer.WriteLine();
                             writer.Indent--;
@@ -462,7 +462,7 @@ namespace ShaderWiz {
                             }
 
                             // Fragment shader
-                            writer.WriteLine("half4 {0} ({1} i) : COLOR {{", "frag", vfPass.UseGeometryShader ? "g2f" : "v2f");
+                            writer.WriteLine("half4 {0} ({1} i) : COLOR {{", "fragment", vfPass.UseGeometryShader ? "g2f" : "v2f");
                             writer.Indent++;
                             writer.WriteLine();
                             writer.Indent--;
