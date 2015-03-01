@@ -8,10 +8,11 @@ namespace ShaderWiz {
         private bool _showDepthTestSettings = true;
         private bool _showAlphaTestSettings = true;
         private bool _showBlendingSettings = true;
+        private bool _showVertexAttributes;
         private bool _showShaderSettings = true;
         private bool _showMiscSettings = true;
-        private Vector2 _scrollPosition;
         private bool _showIncludeSettings = true;
+        private Vector2 _scrollPosition;
 
         private void OnEnable() {
             minSize = new Vector2(350, 100);
@@ -59,6 +60,24 @@ namespace ShaderWiz {
                 SwGuiLayout.EndToggleGroup();
 
                 Pass.BlendOp = (BlendOp) EditorGUILayout.EnumPopup("Blend operation", Pass.BlendOp);
+                SwGuiLayout.EndToggleGroup();
+            }
+            SwGuiLayout.EndControlGroup();
+
+            //Vertex Attributes
+            _showVertexAttributes = SwGuiLayout.BeginControlGroup(_showVertexAttributes, "Vertex Attributes");
+            if (_showVertexAttributes) {
+                Pass.UsePresetInput = SwGuiLayout.BeginToggleGroup("Use preset", Pass.UsePresetInput);
+                Pass.InputPreset = (VertexInputPreset) EditorGUILayout.EnumPopup("Preset:", Pass.InputPreset);
+                SwGuiLayout.EndToggleGroup();
+
+                Pass.UsePresetInput = !SwGuiLayout.BeginToggleGroup("Use custom", !Pass.UsePresetInput);
+                Pass.UsePosition = EditorGUILayout.ToggleLeft("Position", Pass.UsePosition);
+                Pass.UseNormal = EditorGUILayout.ToggleLeft("Normal", Pass.UseNormal);
+                Pass.UseTexcoord = EditorGUILayout.ToggleLeft("First UV set", Pass.UseTexcoord);
+                Pass.UseTexcoord1 = EditorGUILayout.ToggleLeft("Second UV set", Pass.UseTexcoord1);
+                Pass.UseTangent = EditorGUILayout.ToggleLeft("Tangent", Pass.UseTangent);
+                Pass.UseColor = EditorGUILayout.ToggleLeft("Color", Pass.UseColor);
                 SwGuiLayout.EndToggleGroup();
             }
             SwGuiLayout.EndControlGroup();

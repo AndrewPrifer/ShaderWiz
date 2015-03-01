@@ -32,6 +32,14 @@ namespace ShaderWiz {
             FaceCullMode = CullMode.Back;
             ApplyFog = true;
             AllowExternalReference = false;
+            UsePresetInput = true;
+            InputPreset = VertexInputPreset.AppdataFull;
+            UsePosition = true;
+            UseNormal = true;
+            UseTexcoord = true;
+            UseTexcoord1 = true;
+            UseTangent = true;
+            UseColor = true;
 
             CgincAutoLight = false;
             CgincLighting = false;
@@ -68,6 +76,14 @@ namespace ShaderWiz {
         public CullMode FaceCullMode { get; set; }
         public bool ApplyFog { get; set; }
         public bool AllowExternalReference { get; set; }
+        public bool UsePresetInput { get; set; }
+        public VertexInputPreset InputPreset { get; set; }
+        public bool UsePosition { get; set; }
+        public bool UseNormal { get; set; }
+        public bool UseTexcoord { get; set; }
+        public bool UseTexcoord1 { get; set; }
+        public bool UseTangent { get; set; }
+        public bool UseColor { get; set; }
         public bool CgincUnityCg { get; set; }
         public bool CgincAutoLight { get; set; }
         public bool CgincLighting { get; set; }

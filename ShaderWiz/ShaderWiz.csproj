@@ -79,6 +79,7 @@
     <Compile Include="TextureType.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="VectorProperty.cs" />
+    <Compile Include="VertexInputPreset.cs" />
     <Compile Include="VertFragEditor.cs" />
     <Compile Include="VertFragPass.cs" />
   </ItemGroup>

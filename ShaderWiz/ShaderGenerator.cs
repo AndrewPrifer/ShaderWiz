@@ -351,13 +351,13 @@ namespace ShaderWiz {
                             }
 
                             writer.WriteLine("CGPROGRAM");
-                            
-                            writer.WriteLine("#pragma vertex vertex");
-                            writer.WriteLine("#pragma fragment fragment");
 
-                            if (vfPass.UseGeometryShader) writer.WriteLine("#pragma geometry geometry");
-                            if (vfPass.UseHullShader) writer.WriteLine("#pragma hull hull");
-                            if (vfPass.UseDomainShader) writer.WriteLine("#pragma domain domain");
+                            writer.WriteLine("#pragma vertex {0}", "vertex");
+                            writer.WriteLine("#pragma fragment {0}", "fragment");
+
+                            if (vfPass.UseGeometryShader) writer.WriteLine("#pragma geometry {0}", "geometry");
+                            if (vfPass.UseHullShader) writer.WriteLine("#pragma hull {0}", "hull");
+                            if (vfPass.UseDomainShader) writer.WriteLine("#pragma domain {0}", "domain");
 
                             switch (vfPass.ShaderTarget) {
                                 case ShaderTarget.ShaderModel2:
@@ -386,11 +386,32 @@ namespace ShaderWiz {
                             if (vfPass.CgincTessellation) writer.WriteLine("#include \"Tessellation.cginc\"");
                             if (vfPass.CgincAutoLight) writer.WriteLine("#include \"AutoLight.cginc\"");
                             if (vfPass.CgincLighting) writer.WriteLine("#include \"Lighting.cginc\"");
+                            if (vfPass.CgincUnityCg || vfPass.CgincTerrainEngine || vfPass.CgincTessellation || vfPass.CgincAutoLight || vfPass.CgincLighting) {
+                                writer.WriteLine();
+                            }
+
+                            //Input
+                            if (!vfPass.UsePresetInput) {
+                                writer.WriteLine("struct {0} {{", "appdata");
+                                writer.Indent++;
+
+                                if (vfPass.UsePosition) writer.WriteLine("float4 vertex : POSITION;");
+                                if (vfPass.UseNormal) writer.WriteLine("float3 normal : NORMAL;");
+                                if (vfPass.UseTexcoord) writer.WriteLine("float4 texcoord : TEXCOORD0;");
+                                if (vfPass.UseTexcoord1) writer.WriteLine("float4 texcoord : TEXCOORD1;");
+                                if (vfPass.UseTangent) writer.WriteLine("float4 tangent : TANGENT;");
+                                if (vfPass.UseColor) writer.WriteLine("float4 color : COLOR;");
+
+                                writer.Indent--;
+                                writer.WriteLine("}");
+                                writer.WriteLine();
+                            }
 
                             writer.WriteLine("ENDCG");
 
                             writer.Indent--;
                             writer.WriteLine("}");
+                            writer.WriteLine();
                         } else {
                             // TODO fixed function pass
                         }
