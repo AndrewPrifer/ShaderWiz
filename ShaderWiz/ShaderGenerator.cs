@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace ShaderWiz {
     internal static class ShaderGenerator {
@@ -61,21 +62,21 @@ namespace ShaderWiz {
                 writer.WriteLine("Subshader {");
                 writer.Indent++;
 
+                // Tags
+                if (subshader.RenderPosition != RenderPosition.Geometry || subshader.ForceNoShadowCasting ||
+                    subshader.IgnoreProjector) {
+                    writer.Write("Tags { ");
+                    if (subshader.RenderPosition != RenderPosition.Geometry)
+                        writer.Write("\"Queue\" = \"{0}\" ", subshader.RenderPosition);
+                    if (subshader.ForceNoShadowCasting) writer.Write("\"ForceNoShadowCasting\" = \"True\" ");
+                    if (subshader.IgnoreProjector) writer.Write("\"IgnoreProjector\" = \"True\" ");
+                    writer.WriteLine("}");
+                    writer.WriteLine();
+                }
+
                 // Surface shader
                 if (subshader.SubshaderType == SubshaderType.Surface) {
                     var surface = (SurfaceShader) subshader;
-
-                    // Tags
-                    if (surface.RenderPosition != RenderPosition.Geometry || surface.ForceNoShadowCasting ||
-                        surface.IgnoreProjector) {
-                        writer.Write("Tags { ");
-                        if (surface.RenderPosition != RenderPosition.Geometry)
-                            writer.Write("\"Queue\" = \"{0}\" ", surface.RenderPosition);
-                        if (surface.ForceNoShadowCasting) writer.Write("\"ForceNoShadowCasting\" = \"True\" ");
-                        if (surface.IgnoreProjector) writer.Write("\"IgnoreProjector\" = \"True\" ");
-                        writer.WriteLine("}");
-                        writer.WriteLine();
-                    }
 
                     // HLSL begin
                     writer.WriteLine("CGPROGRAM");
@@ -278,7 +279,216 @@ namespace ShaderWiz {
                     writer.WriteLine("}");
                     writer.WriteLine("ENDCG");
                 } else {
-                    // TODO Custom shader
+                    var custom = (CustomShader)subshader;
+
+                    foreach (Pass pass in custom.GetPasses()) {
+                        if (pass.PassType == PassType.VertFrag) {
+                            var vfPass = (VertFragPass) pass;
+
+                            writer.WriteLine("Pass {");
+                            writer.Indent++;
+
+                            // Name
+                            if (vfPass.AllowExternalReference) {
+                                writer.WriteLine("Name \"{0}\"", vfPass.name);
+                            }
+
+                            // Tags
+                            if (vfPass.LightMode != LightMode.Always || vfPass.RequireSoftVegatation) {
+                                writer.Write("Tags { ");
+                                if (vfPass.LightMode != LightMode.Always) {
+                                    writer.Write("\"LightMode\" = \"{0}\" ", vfPass.LightMode);
+                                }
+                                if (vfPass.RequireSoftVegatation) {
+                                    writer.Write("\"RequireOptions\" = \"SoftVegetation\" ");
+                                    writer.WriteLine("}");
+                                }
+                            }
+
+                            // Cull
+                            if (vfPass.FaceCullMode != CullMode.Back) {
+                                writer.WriteLine("Cull {0}", vfPass.FaceCullMode);
+                            }
+
+                            // ZTest
+                            if (vfPass.ZTestFunc != CompareFunction.LessEqual) {
+                                writer.WriteLine("ZTest {0}", vfPass.ZTestFunc);
+                            }
+
+                            // ZWrite
+                            if (!vfPass.WriteToDepthBuffer) {
+                                writer.WriteLine("ZWrite Off");
+                            }
+
+                            // Fog
+                            if (!vfPass.ApplyFog) {
+                                writer.WriteLine("Fog { Mode Off }");
+                            }
+
+                            // AlphaTest (to be moved to fixed function)
+//                            if (vfPass.UseAlphaTest) {
+//                                writer.WriteLine("AlphaTest {0} {1}", vfPass.AlphaTestFunc, vfPass.AlphaTestValue);
+//                            }
+
+                            // Blend
+                            if (vfPass.ApplyBlending) {
+                                writer.Write("Blend {0} {1}", vfPass.SourceBlendFactor, vfPass.DestBlendFactor);
+                                if (vfPass.BlendAlphaSeparately) {
+                                    writer.WriteLine(", {0} {1}", vfPass.AlphaSourceBlendFactor, vfPass.AlphaDestBlendFactor);
+                                } else {
+                                    writer.WriteLine();
+                                }
+                            }
+
+                            // BlendOp
+                            if (vfPass.BlendOp != BlendOp.Add) {
+                               writer.WriteLine("BlendOp {0}", vfPass.BlendOp);
+                            }
+
+                            // Offset
+                            if (vfPass.UseDepthOffset) {
+                                writer.WriteLine("Offset {0} {1}", vfPass.DepthFactor, vfPass.DepthUnit);
+                            }
+
+                            writer.WriteLine("CGPROGRAM");
+                            writer.WriteLine();
+
+                            writer.WriteLine("#pragma vertex {0}", "vertex");
+                            writer.WriteLine("#pragma fragment {0}", "fragment");
+
+                            if (vfPass.UseGeometryShader) writer.WriteLine("#pragma geometry {0}", "geometry");
+
+                            switch (vfPass.ShaderTarget) {
+                                case ShaderTarget.ShaderModel2:
+                                    writer.WriteLine("#pragma target 2.0");
+                                    break;
+                                case ShaderTarget.ShaderModel3:
+                                    writer.WriteLine("#pragma target 3.0");
+                                    break;
+                                case ShaderTarget.ShaderModel4:
+                                    writer.WriteLine("#pragma target 4.0");
+                                    break;
+                                case ShaderTarget.ShaderModel5:
+                                    writer.WriteLine("#pragma target 5.0");
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
+
+                            if (vfPass.CompileToGlsl) writer.WriteLine("#pragma glsl");
+                            if (!vfPass.AutoNormalizeVectors) writer.WriteLine("#pragma glsl_no_auto_normalization");
+                            if (vfPass.GenerateDebugInfo) writer.WriteLine("#pragma enable_d3d11_debug_symbols");
+                            writer.WriteLine();
+
+                            if (vfPass.CgincUnityCg) writer.WriteLine("#include \"UnityCG.cginc\"");
+                            if (vfPass.CgincTerrainEngine) writer.WriteLine("#include \"TerrainEngine.cginc\"");
+                            if (vfPass.CgincTessellation) writer.WriteLine("#include \"Tessellation.cginc\"");
+                            if (vfPass.CgincAutoLight) writer.WriteLine("#include \"AutoLight.cginc\"");
+                            if (vfPass.CgincLighting) writer.WriteLine("#include \"Lighting.cginc\"");
+                            if (vfPass.CgincUnityCg || vfPass.CgincTerrainEngine || vfPass.CgincTessellation || vfPass.CgincAutoLight || vfPass.CgincLighting) {
+                                writer.WriteLine();
+                            }
+
+                            //Input
+                            if (!vfPass.UsePresetInput) {
+                                writer.WriteLine("struct {0} {{", "appdata");
+                                writer.Indent++;
+
+                                if (vfPass.UsePosition) writer.WriteLine("float4 vertex : POSITION;");
+                                if (vfPass.UseNormal) writer.WriteLine("float3 normal : NORMAL;");
+                                if (vfPass.UseTexcoord) writer.WriteLine("float4 texcoord0 : TEXCOORD0;");
+                                if (vfPass.UseTexcoord1) writer.WriteLine("float4 texcoord1 : TEXCOORD1;");
+                                if (vfPass.UseTangent) writer.WriteLine("float4 tangent : TANGENT;");
+                                if (vfPass.UseColor) writer.WriteLine("float4 color : COLOR;");
+
+                                writer.Indent--;
+                                writer.WriteLine("};");
+                                writer.WriteLine();
+                            }
+
+                            if (shader.CommentShader) {
+                                writer.WriteLine(
+                                    "// If you want to access a property, declare it here with the same name and a matching type.");
+                                writer.WriteLine();
+                            }
+
+                            // Vert out
+                            writer.WriteLine("struct {0} {{", vfPass.UseGeometryShader ? "v2g" : "v2f");
+                            writer.Indent++;
+                            if (shader.CommentShader) writer.Write("// Define vertex output struct here.");
+                            writer.WriteLine();
+                            writer.Indent--;
+                            writer.WriteLine("};");
+                            writer.WriteLine();
+
+                            // Geo out
+                            if (vfPass.UseGeometryShader) {
+                                writer.WriteLine("struct {0} {{", "g2f");
+                                writer.Indent++;
+                                if (shader.CommentShader) writer.Write("// Define geometry output struct here.");
+                                writer.WriteLine();
+                                writer.Indent--;
+                                writer.WriteLine("};");
+                                writer.WriteLine();
+                            }
+
+                            // Vertex shader
+                            string vertInput;
+                            if (vfPass.UsePresetInput) {
+                                switch (vfPass.InputPreset) {
+                                    case VertexInputPreset.AppdataBase:
+                                        vertInput = "appdata_base";
+                                        break;
+                                    case VertexInputPreset.AppdataTan:
+                                        vertInput = "appdata_tan";
+                                        break;
+                                    case VertexInputPreset.AppdataFull:
+                                        vertInput = "appdata_full";
+                                        break;
+                                    default:
+                                        throw new ArgumentOutOfRangeException();
+                                }
+                            } else {
+                                vertInput = "appdata";
+                            }
+                            writer.WriteLine("{0} {1} ({2} v) {{", vfPass.UseGeometryShader ? "v2g" : "v2f", "vertex", vertInput);
+                            writer.Indent++;
+                            if (shader.CommentShader) writer.Write("// Implement vertex shader here.");
+                            writer.WriteLine();
+                            writer.Indent--;
+                            writer.WriteLine("}");
+                            writer.WriteLine();
+                            
+                            // Geometry shader
+                            if (vfPass.UseGeometryShader) {
+                                writer.WriteLine("[maxvertexcount({0})]", vfPass.MaxVertCount);
+                                writer.WriteLine("void {0} ({1} {2} input[{3}], inout {4}<{5}> output) {{", "geometry", vfPass.InputTopology.ToString().ToLower(), "v2g", (int) vfPass.InputTopology, vfPass.OutputTopology, "g2f");
+                                writer.Indent++;
+                                if (shader.CommentShader) writer.Write("// Implement geometry shader here.");
+                                writer.WriteLine();
+                                writer.Indent--;
+                                writer.WriteLine("}");
+                                writer.WriteLine();
+                            }
+
+                            // Fragment shader
+                            writer.WriteLine("half4 {0} ({1} i) : COLOR {{", "fragment", vfPass.UseGeometryShader ? "g2f" : "v2f");
+                            writer.Indent++;
+                            if (shader.CommentShader) writer.Write("// Implement fragment shader here.");
+                            writer.WriteLine();
+                            writer.Indent--;
+                            writer.WriteLine("}");
+                            writer.WriteLine();
+                            
+                            writer.WriteLine("ENDCG");
+
+                            writer.Indent--;
+                            writer.WriteLine("}");
+                            writer.WriteLine();
+                        } else {
+                            // TODO fixed function pass
+                        }
+                    }
                 }
                 writer.Indent--;
                 writer.WriteLine("}");
