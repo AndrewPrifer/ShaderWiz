@@ -396,8 +396,8 @@ namespace ShaderWiz {
 
                                 if (vfPass.UsePosition) writer.WriteLine("float4 vertex : POSITION;");
                                 if (vfPass.UseNormal) writer.WriteLine("float3 normal : NORMAL;");
-                                if (vfPass.UseTexcoord) writer.WriteLine("float4 texcoord : TEXCOORD0;");
-                                if (vfPass.UseTexcoord1) writer.WriteLine("float4 texcoord : TEXCOORD1;");
+                                if (vfPass.UseTexcoord) writer.WriteLine("float4 texcoord0 : TEXCOORD0;");
+                                if (vfPass.UseTexcoord1) writer.WriteLine("float4 texcoord1 : TEXCOORD1;");
                                 if (vfPass.UseTangent) writer.WriteLine("float4 tangent : TANGENT;");
                                 if (vfPass.UseColor) writer.WriteLine("float4 color : COLOR;");
 
@@ -406,18 +406,26 @@ namespace ShaderWiz {
                                 writer.WriteLine();
                             }
 
+                            if (shader.CommentShader) {
+                                writer.WriteLine(
+                                    "// If you want to access a property, declare it here with the same name and a matching type.");
+                                writer.WriteLine();
+                            }
+
                             // Vert out
                             writer.WriteLine("struct {0} {{", vfPass.UseGeometryShader ? "v2g" : "v2f");
                             writer.Indent++;
+                            if (shader.CommentShader) writer.Write("// Define vertex output struct here.");
                             writer.WriteLine();
                             writer.Indent--;
                             writer.WriteLine("};");
                             writer.WriteLine();
 
-                            // Frag in
+                            // Geo out
                             if (vfPass.UseGeometryShader) {
                                 writer.WriteLine("struct {0} {{", "g2f");
                                 writer.Indent++;
+                                if (shader.CommentShader) writer.Write("// Define geometry output struct here.");
                                 writer.WriteLine();
                                 writer.Indent--;
                                 writer.WriteLine("};");
@@ -425,7 +433,7 @@ namespace ShaderWiz {
                             }
 
                             // Vertex shader
-                            var vertInput = "";
+                            string vertInput;
                             if (vfPass.UsePresetInput) {
                                 switch (vfPass.InputPreset) {
                                     case VertexInputPreset.AppdataBase:
@@ -445,6 +453,7 @@ namespace ShaderWiz {
                             }
                             writer.WriteLine("{0} {1} ({2} v) {{", vfPass.UseGeometryShader ? "v2g" : "v2f", "vertex", vertInput);
                             writer.Indent++;
+                            if (shader.CommentShader) writer.Write("// Implement vertex shader here.");
                             writer.WriteLine();
                             writer.Indent--;
                             writer.WriteLine("}");
@@ -455,6 +464,7 @@ namespace ShaderWiz {
                                 writer.WriteLine("[maxvertexcount({0})]", vfPass.MaxVertCount);
                                 writer.WriteLine("void {0} ({1} {2} input[{3}], inout {4}<{5}> output) {{", "geometry", vfPass.InputTopology.ToString().ToLower(), "v2g", (int) vfPass.InputTopology, vfPass.OutputTopology, "g2f");
                                 writer.Indent++;
+                                if (shader.CommentShader) writer.Write("// Implement geometry shader here.");
                                 writer.WriteLine();
                                 writer.Indent--;
                                 writer.WriteLine("}");
@@ -464,6 +474,7 @@ namespace ShaderWiz {
                             // Fragment shader
                             writer.WriteLine("half4 {0} ({1} i) : COLOR {{", "fragment", vfPass.UseGeometryShader ? "g2f" : "v2f");
                             writer.Indent++;
+                            if (shader.CommentShader) writer.Write("// Implement fragment shader here.");
                             writer.WriteLine();
                             writer.Indent--;
                             writer.WriteLine("}");

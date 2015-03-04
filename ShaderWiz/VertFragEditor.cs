@@ -6,7 +6,7 @@ namespace ShaderWiz {
     internal class VertFragEditor : EditorWindow {
         private VertFragPass _pass;
         private bool _showDepthTestSettings = true;
-        private bool _showAlphaTestSettings = true;
+//        private bool _showAlphaTestSettings = true;
         private bool _showBlendingSettings = true;
         private bool _showVertexAttributes = true;
         private bool _showShaderSettings = true;
