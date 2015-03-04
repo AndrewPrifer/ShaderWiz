@@ -19,6 +19,11 @@ namespace ShaderWiz {
         }
 
         private void OnGUI() {
+            if (Pass == null) {
+                EditorGUILayout.LabelField("No pass open.");
+                return;
+            }
+
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
             // Depth test

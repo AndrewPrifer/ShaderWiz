@@ -84,6 +84,11 @@ namespace ShaderWiz {
         }
 
         private void OnGUI() {
+            if (Shader == null) {
+                EditorGUILayout.LabelField("No subshader open.");
+                return;
+            }
+
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
             _showPassSettings = SwGuiLayout.BeginControlGroup(_showPassSettings, new GUIContent("Passes", HelpText.Passes));

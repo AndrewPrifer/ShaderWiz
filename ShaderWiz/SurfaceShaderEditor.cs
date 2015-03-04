@@ -18,6 +18,11 @@ namespace ShaderWiz {
         }
 
         private void OnGUI() {
+            if (Shader == null) {
+                EditorGUILayout.LabelField("No subshader open.");
+                return;
+            }
+
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
             // Custom functions group
