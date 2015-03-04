@@ -49,5 +49,70 @@
         public const string TerrainInclude = "Helper functions for Terrain & Vegetation shaders.";
 
         public const string TessellationInclude = "Helper functions for tessellation.";
+
+        public const string UnityCGInclude = "Commonly used global variables and helper functions.";
+
+        public const string AutoLightInclude =
+            "Lighting & shadowing functionality, e.g. surface shaders use this file internally.";
+
+        public const string LightingInclude =
+            "Standard surface shader lighting models; automatically included when you’re writing surface shaders.";
+
+        public const string Passes = "The geometry of an onject is rendered once per pass.";
+
+        public const string WriteToDepthBuffer =
+            "Controls whether pixels from this object are written to the depth buffer. If you’re drawng solid objects, leave this on. If you’re drawing semitransparent effects, switch it off.";
+
+        public const string DepthTestFunc = "How should depth testing be performed.";
+
+        public const string UseDepthOffset =
+            " This allows you to force one polygon to be drawn on top of another although they are actually in the same position. For example [Factor: 0, Unit: –1] pulls the polygon closer to the camera ignoring the polygon’s slope, whereas [Factor –1, Unit: –1] will pull the polygon even closer when looking at a grazing angle.";
+
+        public const string DepthFactor = "Factor scales the maximum Z slope, with respect to X or Y of the polygon.";
+
+        public const string DepthUnit = "Unit scales the minimum resolvable depth buffer value.";
+
+        public const string Blending =
+            "When graphics are rendered, after all shaders have executed and all textures have been applied, the pixels are written to the screen. How they are combined with what is already there is controlled by Blending.";
+
+        public const string ApplyBlending = "If disabled, existing pixels are overwritten by the new ones";
+
+        public const string SrcFactor = "The generated color is multiplied by the source factor.";
+
+        public const string DstFactor = "The color already on screen is multiplied by destination factor.";
+
+        public const string VertexAttributes = "The data that should be provided to the vertex program.";
+
+        public const string UsePresetInput = "Use a built-in input structure.";
+
+        public const string UseCustomInput = "Define your own input structure.";
+
+        public const string InputPreset = "Appdata Base: vertex consists of position, normal and one texture coordinate.\n\n"+
+                                            "Appdata Tan: vertex consists of position, tangent, normal and one texture coordinate.\n\n"+
+                                            "Appdata Full: vertex consists of position, tangent, normal, two texture coordinates and color.";
+
+        public const string CompileToGlsl =
+            "(Deprecated in Unity 5) When compiling shaders for desktop OpenGL platforms, convert Cg/HLSL into GLSL (instead of default setting which is ARB vertex/fragment programs). Use this to enable derivative instructions, texture sampling with explicit LOD levels, etc.";
+
+        public const string AutoNormalizeVectors =
+            "(Deprecated in Unity 5) When compiling shaders for mobile GLSL (iOS/Android), enable automatic normalization of normal & tangent vectors.";
+
+        public const string GenerateDebugInfo =
+            "Generate debug information for shaders compiled for DirectX 11, this will allow you to debug shaders via Visual Studio 2012 (or higher) Graphics debugger.";
+
+        public const string LightMode = "Light Mode defines a Pass’ role in the lighting pipeline.";
+
+        public const string FaceCullMode = "Controls which sides of polygons should be culled (not drawn).";
+
+        public const string RequireSoftVegetation =
+            "Render this pass only if Soft Vegetation is on in Quality Settings.";
+
+        public const string ApplyFog =
+            "Fogging blends the color of the generated pixels down towards a constant color based on distance from camera. Fogging does not modify a blended pixel’s alpha value, only its RGB components.";
+
+        public const string AllowExternalReference =
+            "The name of the pass will be explicitly included, so it can be used externally from another shader.";
+
+
     }
 }

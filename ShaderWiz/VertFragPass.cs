@@ -9,9 +9,9 @@ namespace ShaderWiz {
             UseDepthOffset = false;
             DepthFactor = 0;
             DepthUnit = 0;
-            AlphaTestFunc = CompareFunction.Always;
-            UseAlphaTest = false;
-            AlphaTestValue = 0;
+//            AlphaTestFunc = CompareFunction.Always;
+//            UseAlphaTest = false;
+//            AlphaTestValue = 0;
             ApplyBlending = false;
             SourceBlendFactor = BlendMode.SrcAlpha;
             DestBlendFactor = BlendMode.OneMinusSrcAlpha;
@@ -54,9 +54,9 @@ namespace ShaderWiz {
         public bool UseDepthOffset { get; set; }
         public float DepthFactor { get; set; }
         public float DepthUnit { get; set; }
-        public bool UseAlphaTest { get; set; }
-        public CompareFunction AlphaTestFunc { get; set; }
-        public float AlphaTestValue { get; set; }
+//        public bool UseAlphaTest { get; set; }
+//        public CompareFunction AlphaTestFunc { get; set; }
+//        public float AlphaTestValue { get; set; }
         public bool ApplyBlending { get; set; }
         public BlendMode SourceBlendFactor { get; set; }
         public BlendMode DestBlendFactor { get; set; }

@@ -325,10 +325,10 @@ namespace ShaderWiz {
                                 writer.WriteLine("Fog { Mode Off }");
                             }
 
-                            // AlphaTest
-                            if (vfPass.UseAlphaTest) {
-                                writer.WriteLine("AlphaTest {0} {1}", vfPass.AlphaTestFunc, vfPass.AlphaTestValue);
-                            }
+                            // AlphaTest (to be moved to fixed function)
+//                            if (vfPass.UseAlphaTest) {
+//                                writer.WriteLine("AlphaTest {0} {1}", vfPass.AlphaTestFunc, vfPass.AlphaTestValue);
+//                            }
 
                             // Blend
                             if (vfPass.ApplyBlending) {

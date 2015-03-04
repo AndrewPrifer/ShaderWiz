@@ -86,7 +86,7 @@ namespace ShaderWiz {
         private void OnGUI() {
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
-            _showPassSettings = SwGuiLayout.BeginControlGroup(_showPassSettings, "Passes");
+            _showPassSettings = SwGuiLayout.BeginControlGroup(_showPassSettings, new GUIContent("Passes", HelpText.Passes));
             if (_showPassSettings) {
                 _passList.DoLayoutList();
             }
