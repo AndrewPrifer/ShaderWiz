@@ -16,7 +16,6 @@ namespace ShaderWiz {
         public string Name { get; set; }
         public bool UseFallback { get; set; }
         public string Fallback { get; set; }
-
         public bool CommentShader { get; set; }
 
         private void Init() {

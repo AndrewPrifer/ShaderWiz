@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BD8A39B3-AD38-4E2B-9695-AD4C96F87162}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ShaderWiz</RootNamespace>
+    <AssemblyName>ShaderWiz</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEditor">
+      <HintPath>..\..\..\..\Program Files (x86)\Unity\Editor\Data\Managed\UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\Program Files (x86)\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AboutWindow.cs" />
+    <Compile Include="ColorProperty.cs" />
+    <Compile Include="CompareFunction.cs" />
+    <Compile Include="CustomShader.cs" />
+    <Compile Include="CustomShaderEditor.cs" />
+    <Compile Include="DefaultTexture.cs" />
+    <Compile Include="FloatProperty.cs" />
+    <Compile Include="HelpText.cs" />
+    <Compile Include="InputTopology.cs" />
+    <Compile Include="LightingModel.cs" />
+    <Compile Include="LightMode.cs" />
+    <Compile Include="OutputTopology.cs" />
+    <Compile Include="Pass.cs" />
+    <Compile Include="PassType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyType.cs" />
+    <Compile Include="RangeProperty.cs" />
+    <Compile Include="Renderer.cs" />
+    <Compile Include="RenderOption.cs" />
+    <Compile Include="RenderPosition.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="ShaderGenerator.cs" />
+    <Compile Include="ShaderProperty.cs" />
+    <Compile Include="ShaderSettings.cs" />
+    <Compile Include="ShaderTarget.cs" />
+    <Compile Include="ShaderWizardEditor.cs" />
+    <Compile Include="Subshader.cs" />
+    <Compile Include="SubshaderType.cs" />
+    <Compile Include="SurfaceShader.cs" />
+    <Compile Include="SurfaceShaderEditor.cs" />
+    <Compile Include="SwGui.cs" />
+    <Compile Include="SwGuiLayout.cs" />
+    <Compile Include="TextureProperty.cs" />
+    <Compile Include="TextureType.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="VectorProperty.cs" />
+    <Compile Include="VertexInputPreset.cs" />
+    <Compile Include="VertFragEditor.cs" />
+    <Compile Include="VertFragPass.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(TargetPath)" "E:\Workspace\Unity\ShaderWiz\Assets\ShaderWiz\Editor"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

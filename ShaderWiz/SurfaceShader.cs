@@ -10,9 +10,6 @@ namespace ShaderWiz {
             CgincUnityCg = false;
 
             // Misc settings
-            RenderPosition = RenderPosition.Geometry;
-            IgnoreProjector = false;
-            ForceNoShadowCasting = false;
             DisableWhenSoftVegIsOff = false;
             AlphaBlended = false;
             CommentFinal = false;
@@ -94,9 +91,6 @@ namespace ShaderWiz {
         public bool SupportAllShadowTypes { get; set; }
         public bool AlphaBlended { get; set; }
         public bool DisableWhenSoftVegIsOff { get; set; }
-        public bool ForceNoShadowCasting { get; set; }
-        public bool IgnoreProjector { get; set; }
-        public RenderPosition RenderPosition { get; set; }
         public bool CommentFinal { get; set; }
         public bool CgincUnityCg { get; set; }
         public bool CgincAutoLight { get; set; }
