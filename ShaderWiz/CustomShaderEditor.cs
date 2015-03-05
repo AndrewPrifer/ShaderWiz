@@ -99,11 +99,11 @@ namespace ShaderWiz {
 
             _showSubshaderSettings = SwGuiLayout.BeginControlGroup(_showSubshaderSettings, "Subshader Settings");
             if (_showSubshaderSettings) {
-                Shader.ForceNoShadowCasting = EditorGUILayout.ToggleLeft("Force no shadow casting",
+                Shader.ForceNoShadowCasting = EditorGUILayout.ToggleLeft(new GUIContent("Force no shadow casting", HelpText.ForceNoShadow),
                     Shader.ForceNoShadowCasting);
-                Shader.IgnoreProjector = EditorGUILayout.ToggleLeft("Ignore projector", Shader.IgnoreProjector);
+                Shader.IgnoreProjector = EditorGUILayout.ToggleLeft(new GUIContent("Ignore projector", HelpText.IgnoreProjector), Shader.IgnoreProjector);
                 Shader.RenderPosition =
-                    (RenderPosition)EditorGUILayout.EnumPopup("Rendering order position:", Shader.RenderPosition);
+                    (RenderPosition)EditorGUILayout.EnumPopup(new GUIContent("Rendering order position:", HelpText.RenderingOrder), Shader.RenderPosition);
             }
             SwGuiLayout.EndControlGroup();
 

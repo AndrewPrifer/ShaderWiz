@@ -166,11 +166,11 @@ namespace ShaderWiz {
                 Shader.DisableWhenSoftVegIsOff =
                     EditorGUILayout.ToggleLeft("Disable subshader when soft vegetation is off",
                         Shader.DisableWhenSoftVegIsOff);
-                Shader.ForceNoShadowCasting = EditorGUILayout.ToggleLeft("Force no shadow casting",
+                Shader.ForceNoShadowCasting = EditorGUILayout.ToggleLeft(new GUIContent("Force no shadow casting", HelpText.ForceNoShadow),
                     Shader.ForceNoShadowCasting);
-                Shader.IgnoreProjector = EditorGUILayout.ToggleLeft("Ignore projector", Shader.IgnoreProjector);
+                Shader.IgnoreProjector = EditorGUILayout.ToggleLeft(new GUIContent("Ignore projector", HelpText.IgnoreProjector), Shader.IgnoreProjector);
                 Shader.RenderPosition =
-                    (RenderPosition) EditorGUILayout.EnumPopup("Rendering order position:", Shader.RenderPosition);
+                    (RenderPosition)EditorGUILayout.EnumPopup(new GUIContent("Rendering order position:", HelpText.RenderingOrder), Shader.RenderPosition);
                 Shader.CommentFinal =
                     EditorGUILayout.ToggleLeft("Put debug comments in compiled surface shader",
                         Shader.CommentFinal);
