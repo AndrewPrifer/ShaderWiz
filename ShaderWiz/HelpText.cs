@@ -117,10 +117,10 @@
             "You can determine in which order your objects are drawn using the Queue tag. A Shader decides which render queue its objects belong to, this way any Transparent shaders make sure they are drawn after all opaque objects and so on.";
 
         public const string ForceNoShadow =
-            "If ForceNoShadowCasting tag is given and has a value of “True”, then an object that is rendered using this subshader will never cast shadows. This is mostly useful when you are using shader replacement on transparent objects and you do not wont to inherit a shadow pass from another subshader.";
+            "Forces the object to cast no shadows. This is mostly useful when you are using shader replacement on transparent objects and you do not want to inherit a shadow pass from another subshader.";
 
         public const string IgnoreProjector =
-            "If IgnoreProjector tag is given and has a value of “True”, then an object that uses this shader will not be affected by Projectors. This is mostly useful on semitransparent objects, because there is no good way for Projectors to affect them.";
+            "Makes the object unaffected by Projectors. This is mostly useful on semitransparent objects, because there is no good way for Projectors to affect them.";
 
     }
 }
