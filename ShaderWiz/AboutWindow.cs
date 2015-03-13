@@ -9,7 +9,7 @@ namespace ShaderWiz {
             GetWindow(typeof(AboutWindow), false, "About");
         }
 
-        private const string version = "0.8";
+        private const string version = "1.0.1";
 
         private void OnGUI() {
             minSize = new Vector2(200, 100);
