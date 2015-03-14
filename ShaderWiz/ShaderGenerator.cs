@@ -123,18 +123,12 @@ namespace ShaderWiz {
                     }
 
                     // Input
-                    if (shader.CommentShader)
+                    if (shader.CommentShader) {
+                        writer.WriteLine("// To use a uv set, declare uv<TextureName> inside Input.");
                         writer.WriteLine("// To use second uv set, declare uv2<TextureName> inside Input.");
+                    }
                     writer.WriteLine("struct Input {");
                     writer.Indent++;
-
-                    if (surface.UvInInput) {
-                        foreach (ShaderProperty property in shader.GetProperties()) {
-                            if (property.PropertyType == PropertyType.Texture) {
-                                writer.WriteLine("float2 uv{0};", property.Name);
-                            }
-                        }
-                    }
 
                     if (surface.ViewDirInInput) writer.WriteLine("float3 viewDir;");
                     if (surface.VertColorInInput) writer.WriteLine("float4 vertColor : COLOR;");
