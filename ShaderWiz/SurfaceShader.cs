@@ -36,7 +36,6 @@ namespace ShaderWiz {
             SsPositionInInput = false;
             ViewDirInInput = false;
             VertColorInInput = false;
-            UvInInput = true;
 
             // Custom function settings
             ViewDirInDirectional = false;
@@ -78,7 +77,6 @@ namespace ShaderWiz {
         public bool SsPositionInInput { get; set; }
         public bool WorldReflectionVectorInInput { get; set; }
         public bool WorldNormalInInput { get; set; }
-        public bool UvInInput { get; set; }
         public bool OutNormalSpecified { get; set; }
         public bool ApplyAmbient { get; set; }
         public bool ApplyVertexLights { get; set; }

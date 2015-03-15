@@ -101,7 +101,7 @@ namespace ShaderWiz {
                 } else {
                     var path = EditorUtility.SaveFilePanel(
                         "Save shader",
-                        "",
+                        "Assets",
                         _shaderSettings.Name + ".shader",
                         "shader");
 
