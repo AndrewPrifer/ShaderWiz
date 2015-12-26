@@ -1,8 +1,8 @@
-# ShaderWiz is now open source!
-You can still buy me a coffee for streamlined package updates from the [Asset Store][]. I do accept pull requests.
+# ShaderWiz for Unity is now open source!
+ShaderWiz is now free and open source under the very permissive MIT license. You can still buy me a coffee for streamlined package updates from the [Asset Store][]. I do accept pull requests.
 
 ## ShaderWiz 1.0
-ShaderWiz lets you focus on the most important part of shader creation: the shader itself! It eliminates the hassle of configuring your shader in code, by providing an easy to use interface. ShaderWiz generates all the necessary property fields, input struct members, preprocessor directives, custom functions, so that you just need to fill in the blanks without having to read countless pages of the Unity manual.
+ShaderWiz is an editor extension for the [Unity game engine][] that lets you focus on the most important part of shader creation: the shader itself! It eliminates the hassle of configuring your shader in code, by providing an easy to use interface. ShaderWiz generates all the necessary property fields, input struct members, preprocessor directives, custom functions, so that you just need to fill in the blanks without having to read countless pages of the Unity manual.
 
 ![screenshot][]
 
@@ -37,5 +37,6 @@ By using ShaderLab, you ensure that you don't miss any little detail in your set
 [Asset Store]: https://www.assetstore.unity3d.com/en/#!/content/29931
 [Forum Thread]: http://forum.unity3d.com/threads/released-shaderwiz-shader-wizard-for-unity.299174/
 [Website]: http://sphericalcubegames.com
+[Unity game engine]: http://unity3d.com
 
 [screenshot]: http://i.imgur.com/fflmK8p.png
